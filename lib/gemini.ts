@@ -16,25 +16,32 @@ Se a imagem estiver em ângulo ou parcialmente visível, extraia o que for poss�
 Exemplo de saída: ["batata", "chocolate em pó", "farinha de trigo", "sabão em barra"]
 Retorne APENAS o array JSON, sem texto adicional antes ou depois.`
 
-  const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{
-        parts: [
-          { inline_data: { mime_type: mimeType, data: base64Image } },
-          { text: prompt },
-        ],
-      }],
-      generationConfig: {
-        temperature: 0.2,
-        maxOutputTokens: 1024,
-      },
-    }),
+  const requestBody = JSON.stringify({
+    contents: [{
+      parts: [
+        { inline_data: { mime_type: mimeType, data: base64Image } },
+        { text: prompt },
+      ],
+    }],
+    generationConfig: {
+      temperature: 0.2,
+      maxOutputTokens: 1024,
+    },
   })
 
-  if (!response.ok) {
-    const error = await response.text()
+  let response: Response | undefined
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) await new Promise(r => setTimeout(r, attempt * 1500))
+    response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: requestBody,
+    })
+    if (response.ok || response.status !== 503) break
+  }
+
+  if (!response!.ok) {
+    const error = await response!.text()
     throw new Error(`Gemini API error: ${error}`)
   }
 
