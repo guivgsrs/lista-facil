@@ -26,6 +26,11 @@ Retorne APENAS o array JSON, sem texto adicional antes ou depois.`
     generationConfig: {
       temperature: 0.2,
       maxOutputTokens: 1024,
+      responseMimeType: 'application/json',
+      responseSchema: {
+        type: 'array',
+        items: { type: 'string' },
+      },
     },
   })
 
