@@ -52,6 +52,8 @@ Retorne APENAS o array JSON, sem texto adicional antes ou depois.`
 
   const data = await response.json()
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '[]'
+  console.log('Gemini raw text:', text?.slice(0, 500))
+  console.log('Gemini finish reason:', data.candidates?.[0]?.finishReason)
 
   // Extract JSON array from the response
   const match = text.match(/\[[\s\S]*\]/)
