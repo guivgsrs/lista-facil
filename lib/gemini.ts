@@ -1,5 +1,4 @@
-// Google Gemini 1.5 Flash — free tier, vision support
-// Usado para digitalizar a foto da lista de compras
+// Gemini vision — digitaliza foto da lista de compras
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent'
 
@@ -7,13 +6,15 @@ export async function ocrShoppingList(base64Image: string, mimeType: string): Pr
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) throw new Error('GEMINI_API_KEY não configurada')
 
-  const prompt = `Você está ajudando a digitalizar uma lista de compras manuscrita em português brasileiro.
-Olhe a imagem e extraia todos os itens marcados com "-" no início.
-Retorne SOMENTE um array JSON de strings com os nomes dos itens, limpos e normalizados.
-Não inclua o traço. Não inclua títulos ou cabeçalhos como "COMPRAS".
-Ignore itens ilegíveis ou muito ambíguos.
-Exemplo de saída: ["leite condensado", "azeite", "sal", "batata"]
-Retorne apenas o array JSON, sem nenhum texto adicional.`
+  const prompt = `Você está digitalizando uma lista de compras manuscrita em português brasileiro.
+Analise a imagem com cuidado e extraia TODOS os itens visíveis na lista, mesmo que a caligrafia seja difícil de ler.
+Os itens podem estar marcados com "-", "•", números ou simplesmente escritos em linhas.
+Interprete abreviações e grafia informal — use o contexto de lista de compras para entender.
+Retorne SOMENTE um array JSON de strings com os nomes dos itens em letras minúsculas, sem traços nem marcadores.
+Não inclua cabeçalhos como "COMPRAS", "LISTA" ou similares.
+Se a imagem estiver em ângulo ou parcialmente visível, extraia o que for possível ler.
+Exemplo de saída: ["batata", "chocolate em pó", "farinha de trigo", "sabão em barra"]
+Retorne APENAS o array JSON, sem texto adicional antes ou depois.`
 
   const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
     method: 'POST',
@@ -26,7 +27,7 @@ Retorne apenas o array JSON, sem nenhum texto adicional.`
         ],
       }],
       generationConfig: {
-        temperature: 0.1,
+        temperature: 0.2,
         maxOutputTokens: 1024,
       },
     }),
