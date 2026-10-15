@@ -1,7 +1,7 @@
 // Google Gemini 1.5 Flash — free tier, vision support
 // Usado para digitalizar a foto da lista de compras
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent'
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
 
 export async function ocrShoppingList(base64Image: string, mimeType: string): Promise<string[]> {
   const apiKey = process.env.GEMINI_API_KEY
