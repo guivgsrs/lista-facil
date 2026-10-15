@@ -1,6 +1,6 @@
 // Gemini vision — digitaliza foto da lista de compras
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent'
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent'
 
 export async function ocrShoppingList(base64Image: string, mimeType: string): Promise<string[]> {
   const apiKey = process.env.GEMINI_API_KEY
