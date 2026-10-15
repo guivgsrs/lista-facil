@@ -528,8 +528,8 @@ export default function EditPage() {
         )}
       </div>
 
-      {/* Bottom action bar — editing state */}
-      {state === 'editing' && (
+      {/* Bottom action bar — editing/saving state */}
+      {(state === 'editing' || state === 'saving') && (
         <div style={{
           position: 'fixed',
           bottom: 0,
