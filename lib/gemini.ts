@@ -27,32 +27,30 @@ Retorne APENAS o array JSON, sem texto adicional antes ou depois.`
       temperature: 0.2,
       maxOutputTokens: 1024,
       responseMimeType: 'application/json',
-      responseSchema: {
-        type: 'array',
-        items: { type: 'string' },
-      },
     },
   })
 
-  let response: Response | undefined
-  for (let attempt = 0; attempt < 3; attempt++) {
-    if (attempt > 0) await new Promise(r => setTimeout(r, attempt * 1500))
-    response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: requestBody,
-    })
-    if (response.ok || response.status !== 503) break
+  const doFetch = () => fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: requestBody,
+  })
+
+  // Retry up to 3 times on 503 (high demand)
+  let response = await doFetch()
+  for (let attempt = 1; attempt < 3 && response.status === 503; attempt++) {
+    await new Promise(r => setTimeout(r, attempt * 1500))
+    response = await doFetch()
   }
 
-  if (!response!.ok) {
-    const error = await response!.text()
+  if (!response.ok) {
+    const error = await response.text()
     throw new Error(`Gemini API error: ${error}`)
   }
 
   const data = await response.json()
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '[]'
-  console.log('Gemini raw text:', text?.slice(0, 500))
+  const text: string = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '[]'
+  console.log('Gemini raw text:', text.slice(0, 500))
   console.log('Gemini finish reason:', data.candidates?.[0]?.finishReason)
 
   // Extract JSON array from the response
