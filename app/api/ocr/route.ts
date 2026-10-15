@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
     const mimeType = file.type || 'image/jpeg'
 
     const rawItems = await ocrShoppingList(base64, mimeType)
-    console.log('OCR raw items:', JSON.stringify(rawItems))
 
     // Auto-assign sections to detected items
     const items = rawItems.map((name, index) => ({

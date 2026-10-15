@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Camera, Plus, Trash2, ChevronDown, ChevronUp, CheckCircle2, Loader2, AlertCircle, X } from 'lucide-react'
-import { assignSection, getSectionName } from '@/lib/store-map'
+import { assignSection } from '@/lib/store-map'
 import type { ListItem, PresetItem } from '@/lib/types'
 import Link from 'next/link'
 
@@ -363,7 +363,7 @@ export default function EditPage() {
                   </p>
                 </div>
               ) : (
-                items.map((item, idx) => (
+                [...items].sort((a, b) => a.order_index - b.order_index).map((item, idx) => (
                   <div
                     key={item.id}
                     style={{
@@ -388,9 +388,6 @@ export default function EditPage() {
                           padding: 0,
                         }}
                       />
-                      <p style={{ margin: '2px 0 0', fontSize: 12, color: 'var(--text-tertiary)' }}>
-                        {getSectionName(item.section)}
-                      </p>
                     </div>
                     <button
                       onClick={() => removeItem(item.id)}
