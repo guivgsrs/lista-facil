@@ -8,9 +8,31 @@ function getSupabase() {
   )
 }
 
-// GET /api/list — returns the current active list with items
-export async function GET() {
+// GET /api/list — returns the current active list, or ?history=true for last 6 completed
+export async function GET(req: NextRequest) {
   const supabase = getSupabase()
+  const { searchParams } = new URL(req.url)
+
+  if (searchParams.get('history') === 'true') {
+    const { data: lists } = await supabase
+      .from('shopping_lists')
+      .select('id, status, created_at')
+      .eq('status', 'completed')
+      .order('created_at', { ascending: false })
+      .limit(6)
+
+    const listsWithCounts = await Promise.all(
+      (lists ?? []).map(async list => {
+        const { count } = await supabase
+          .from('list_items')
+          .select('*', { count: 'exact', head: true })
+          .eq('list_id', list.id)
+        return { ...list, item_count: count ?? 0 }
+      })
+    )
+
+    return NextResponse.json({ lists: listsWithCounts })
+  }
 
   const { data: list } = await supabase
     .from('shopping_lists')

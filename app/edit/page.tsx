@@ -1,10 +1,25 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Camera, Plus, Trash2, ChevronDown, ChevronUp, CheckCircle2, Loader2, AlertCircle, X, Pencil, Check } from 'lucide-react'
+import { Camera, Plus, Trash2, ChevronDown, ChevronUp, ChevronLeft, CheckCircle2, Loader2, AlertCircle, X, Pencil, Check } from 'lucide-react'
 import { assignSection } from '@/lib/store-map'
 import type { ListItem, PresetItem } from '@/lib/types'
 import Link from 'next/link'
+
+const PRESET_CATS = [
+  { id: 'hortifruti',   label: '🥦 Hortifruti' },
+  { id: 'acougue',      label: '🥩 Açougue' },
+  { id: 'ilha_queijos', label: '🥚 Frios & Ovos' },
+  { id: 'geladeiras',   label: '🧈 Laticínios' },
+  { id: 'c10',          label: '☕ Bebidas' },
+  { id: 'c11',          label: '🍫 Doces' },
+  { id: 'c09',          label: '🍝 Massas' },
+  { id: 'c08',          label: '🧂 Temperos' },
+  { id: 'c07',          label: '🧽 Limpeza' },
+  { id: 'c06',          label: '🧺 Roupa' },
+  { id: 'c04',          label: '🧻 Higiene' },
+  { id: 'sem_secao',    label: '📦 Outros' },
+]
 
 type DraftItem = { id: string; name: string; section: string; order_index: number; qty: number }
 type PageState = 'idle' | 'processing' | 'editing' | 'saving' | 'done'
@@ -182,7 +197,11 @@ export default function EditPage() {
     <main style={{ minHeight: '100dvh', background: S.bg, paddingBottom: state === 'editing' ? 96 : 32 }}>
 
       {/* Header */}
-      <header className="apple-header" style={{ padding: '14px 20px 14px' }}>
+      <header className="apple-header" style={{ padding: '12px 20px 14px' }}>
+        <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 2, color: S.blue, textDecoration: 'none', fontSize: 16, marginBottom: 2 }}>
+          <ChevronLeft size={20} strokeWidth={2} style={{ marginLeft: -4 }} />
+          Início
+        </Link>
         <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4 }}>Lista de Compras</h1>
       </header>
 
@@ -426,55 +445,63 @@ export default function EditPage() {
         )}
 
         {/* Presets */}
-        {(state === 'idle' || state === 'editing') && (
-          <div style={{ background: S.card, borderRadius: 12, overflow: 'hidden', marginBottom: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <button
-              onClick={() => setPresetsOpen(p => !p)}
-              style={{ width: '100%', background: 'none', border: 'none', padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', gap: 12 }}
-            >
-              <div style={{ textAlign: 'left' }}>
-                <p style={{ margin: 0, fontSize: 16, fontWeight: 600, color: S.p1 }}>Itens frequentes</p>
-                <p style={{ margin: '2px 0 0', fontSize: 13, color: S.p2 }}>
-                  {activePresets.size > 0 ? `${activePresets.size} selecionado(s)` : 'Toque para selecionar'}
-                </p>
-              </div>
-              {presetsOpen
-                ? <ChevronUp  size={18} color={S.p3} />
-                : <ChevronDown size={18} color={S.p3} />}
-            </button>
+        {(state === 'idle' || state === 'editing') && (() => {
+          const grouped = PRESET_CATS
+            .map(cat => ({ ...cat, items: presets.filter(p => p.section === cat.id) }))
+            .filter(cat => cat.items.length > 0)
+          return (
+            <div style={{ background: S.card, borderRadius: 12, overflow: 'hidden', marginBottom: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+              <button
+                onClick={() => setPresetsOpen(p => !p)}
+                style={{ width: '100%', background: 'none', border: 'none', padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', gap: 12 }}
+              >
+                <div style={{ textAlign: 'left' }}>
+                  <p style={{ margin: 0, fontSize: 16, fontWeight: 600, color: S.p1 }}>Itens frequentes</p>
+                  <p style={{ margin: '2px 0 0', fontSize: 13, color: S.p2 }}>
+                    {activePresets.size > 0 ? `${activePresets.size} selecionado${activePresets.size > 1 ? 's' : ''}` : 'Toque para selecionar'}
+                  </p>
+                </div>
+                {presetsOpen ? <ChevronUp size={18} color={S.p3} /> : <ChevronDown size={18} color={S.p3} />}
+              </button>
 
-            {presetsOpen && (
-              <div style={{ borderTop: `0.5px solid ${S.sep}`, padding: '10px 14px 14px' }}>
-                {presets.length === 0
-                  ? <p style={{ fontSize: 14, color: S.p2, margin: '8px 0' }}>Nenhum item frequente cadastrado.</p>
-                  : (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, paddingTop: 6 }}>
-                      {presets.map(preset => {
-                        const active = activePresets.has(preset.id)
-                        return (
-                          <button
-                            key={preset.id}
-                            onClick={() => { if (state === 'idle') setState('editing'); togglePreset(preset) }}
-                            style={{
-                              background: active ? S.blue : S.fill3,
-                              color: active ? '#fff' : S.p1,
-                              border: 'none', borderRadius: 20,
-                              padding: '7px 14px', fontSize: 15,
-                              cursor: 'pointer', fontWeight: active ? 600 : 400,
-                              transition: 'background 0.15s ease, color 0.15s ease',
-                            }}
-                          >
-                            {preset.name}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  )
-                }
-              </div>
-            )}
-          </div>
-        )}
+              {presetsOpen && (
+                <div style={{ borderTop: `0.5px solid ${S.sep}`, padding: '12px 16px 16px' }}>
+                  {grouped.length === 0
+                    ? <p style={{ fontSize: 14, color: S.p2, margin: '8px 0' }}>Nenhum item frequente cadastrado.</p>
+                    : grouped.map(cat => (
+                      <div key={cat.id} style={{ marginBottom: 14 }}>
+                        <p style={{ margin: '0 0 7px', fontSize: 12, fontWeight: 600, color: S.p3, letterSpacing: 0.2 }}>
+                          {cat.label}
+                        </p>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+                          {cat.items.map(preset => {
+                            const active = activePresets.has(preset.id)
+                            return (
+                              <button
+                                key={preset.id}
+                                onClick={() => { if (state === 'idle') setState('editing'); togglePreset(preset) }}
+                                style={{
+                                  background: active ? S.blue : S.fill3,
+                                  color: active ? '#fff' : S.p1,
+                                  border: 'none', borderRadius: 20,
+                                  padding: '7px 14px', fontSize: 15,
+                                  cursor: 'pointer', fontWeight: active ? 600 : 400,
+                                  transition: 'background 0.15s ease, color 0.15s ease',
+                                }}
+                              >
+                                {preset.name}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              )}
+            </div>
+          )
+        })()}
       </div>
 
       {/* Bottom bar */}

@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw } from 'lucide-react'
+import { RefreshCw, ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
 import { SECTIONS, getSectionOrder } from '@/lib/store-map'
 import type { ItemStatus, ListItem, SectionGroup } from '@/lib/types'
 
@@ -110,19 +111,23 @@ export default function ShopPage() {
     <main style={{ minHeight: '100dvh', background: 'var(--bg)', paddingBottom: 48 }}>
 
       {/* Header */}
-      <header className="apple-header" style={{ padding: '16px 20px 14px' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4 }}>
-              {allDone ? 'Tudo certo 🎉' : 'Mercado'}
-            </h1>
-            <p style={{ margin: '3px 0 0', fontSize: 13, color: 'var(--label-secondary)' }}>
-              {done} de {total} itens
-            </p>
-          </div>
-          <button onClick={loadList} style={{ background: 'none', border: 'none', padding: '4px', cursor: 'pointer', marginTop: 2, display: 'flex' }}>
+      <header className="apple-header" style={{ padding: '12px 20px 14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 2, color: 'var(--blue)', textDecoration: 'none', fontSize: 16 }}>
+            <ChevronLeft size={20} strokeWidth={2} style={{ marginLeft: -4 }} />
+            Início
+          </Link>
+          <button onClick={loadList} style={{ background: 'none', border: 'none', padding: '4px', cursor: 'pointer', display: 'flex' }}>
             <RefreshCw size={19} color="var(--blue)" />
           </button>
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4 }}>
+            {allDone ? 'Tudo certo 🎉' : 'Mercado'}
+          </h1>
+          <p style={{ margin: '3px 0 0', fontSize: 13, color: 'var(--label-secondary)' }}>
+            {done} de {total} itens
+          </p>
         </div>
 
         {/* Progress */}
