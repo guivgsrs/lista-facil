@@ -61,16 +61,17 @@ function SegmentedControl({ active }: { active: 'edit' | 'shop' }) {
   )
 }
 
-/* Two corner marks — top-right and bottom-right of the camera viewfinder area */
 function ViewfinderCorners() {
   const base: React.CSSProperties = {
-    position: 'absolute', width: 18, height: 18,
-    borderColor: 'rgba(255,255,255,0.28)',
+    position: 'absolute', width: 20, height: 20,
+    borderColor: 'rgba(255,255,255,0.32)',
   }
   return (
     <>
-      <div style={{ ...base, top: 14, right: 14, borderTop: '2px solid', borderRight: '2px solid', borderTopRightRadius: 3 }} />
-      <div style={{ ...base, bottom: 52, right: 14, borderBottom: '2px solid', borderRight: '2px solid', borderBottomRightRadius: 3 }} />
+      <div style={{ ...base, top: 16, left: 16, borderTop: '2px solid', borderLeft: '2px solid', borderTopLeftRadius: 3 }} />
+      <div style={{ ...base, top: 16, right: 16, borderTop: '2px solid', borderRight: '2px solid', borderTopRightRadius: 3 }} />
+      <div style={{ ...base, bottom: 16, left: 16, borderBottom: '2px solid', borderLeft: '2px solid', borderBottomLeftRadius: 3 }} />
+      <div style={{ ...base, bottom: 16, right: 16, borderBottom: '2px solid', borderRight: '2px solid', borderBottomRightRadius: 3 }} />
     </>
   )
 }
@@ -148,47 +149,39 @@ export default function HomePage() {
           Lista de mercado
         </h1>
 
-        {/* ── Scanner CTA — dark card like camera viewfinder ── */}
-        <div style={{ position: 'relative', marginBottom: 10 }}>
+        {/* ── Scanner CTA — câmera é a ação principal ── */}
+        <Link href="/edit" style={{
+          display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+          background: 'linear-gradient(155deg, #1a1a1c 0%, #0e0e10 100%)',
+          borderRadius: 20, minHeight: 200,
+          padding: '20px 24px',
+          textDecoration: 'none', overflow: 'hidden', position: 'relative',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.22)',
+          marginBottom: 12,
+        }}>
+          <Camera
+            size={72}
+            color="rgba(255,255,255,0.08)"
+            style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -62%)' }}
+            aria-hidden={true}
+          />
+          <ViewfinderCorners />
+          <p style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 700, color: '#fff', letterSpacing: -0.4 }}>
+            Tirar foto da lista
+          </p>
+          <p style={{ margin: 0, fontSize: 14, color: 'rgba(255,255,255,0.45)' }}>
+            Escaneie a lista manuscrita
+          </p>
+        </Link>
 
-          {/* Dark camera area (primary) — texto no BOTTOM, sem conflito de espaço */}
-          <Link href="/edit" style={{
-            display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-            background: 'linear-gradient(155deg, #1a1a1c 0%, #0e0e10 100%)',
-            borderRadius: 20, minHeight: 188,
-            padding: '16px 20px',
-            textDecoration: 'none', overflow: 'hidden', position: 'relative',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.22)',
-          }}>
-            <Camera
-              size={88}
-              color="rgba(255,255,255,0.06)"
-              style={{ position: 'absolute', top: '50%', right: '18%', transform: 'translateY(-60%)' }}
-              aria-hidden={true}
-            />
-            <ViewfinderCorners />
-            <p style={{ margin: '0 0 3px', fontSize: 20, fontWeight: 700, color: '#fff', letterSpacing: -0.3 }}>
-              Tirar foto da lista
-            </p>
-            <p style={{ margin: 0, fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>
-              Escaneie a lista manuscrita
-            </p>
-          </Link>
-
-          {/* Floating manual button — TOP-LEFT, sempre branco sobre o fundo escuro da câmera */}
-          <Link href="/edit" style={{
-            position: 'absolute', left: 12, top: 12,
-            background: '#F2F2F7', borderRadius: 14,
-            padding: '14px 10px', width: 110, textAlign: 'center',
-            textDecoration: 'none', boxShadow: '0 6px 24px rgba(0,0,0,0.5)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
-          }}>
-            <Pencil size={20} color={S.blue} aria-hidden={true} />
-            <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: S.blue, textTransform: 'uppercase', letterSpacing: 0.5, lineHeight: 1.5, textAlign: 'center' }}>
-              Adicionar<br />manualmente
-            </p>
-          </Link>
-        </div>
+        {/* Link secundário discreto */}
+        <Link href="/edit" style={{
+          display: 'block', textAlign: 'center', padding: '10px',
+          fontSize: 15, color: S.blue, textDecoration: 'none',
+          marginBottom: 8,
+        }}>
+          ou adicionar manualmente
+        </Link>
 
         {/* ── History ── */}
         {lists.length > 0 && (
