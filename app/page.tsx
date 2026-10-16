@@ -150,7 +150,7 @@ export default function HomePage() {
         </h1>
 
         {/* ── Scanner CTA — câmera é a ação principal ── */}
-        <Link href="/edit" style={{
+        <Link href="/camera" style={{
           display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
           background: 'linear-gradient(155deg, #1a1a1c 0%, #0e0e10 100%)',
           borderRadius: 20, minHeight: 200,
@@ -174,14 +174,6 @@ export default function HomePage() {
           </p>
         </Link>
 
-        {/* Link secundário discreto */}
-        <Link href="/edit" style={{
-          display: 'block', textAlign: 'center', padding: '10px',
-          fontSize: 15, color: S.blue, textDecoration: 'none',
-          marginBottom: 8,
-        }}>
-          ou adicionar manualmente
-        </Link>
 
         {/* ── History ── */}
         {lists.length > 0 && (

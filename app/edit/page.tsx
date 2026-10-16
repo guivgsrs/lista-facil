@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { Camera, Plus, Trash2, ChevronDown, ChevronUp, ChevronLeft, CheckCircle2, Loader2, AlertCircle, X, Pencil, Check } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Plus, Trash2, ChevronDown, ChevronUp, ChevronLeft, CheckCircle2, Loader2, AlertCircle, X, Pencil, Check } from 'lucide-react'
 import { assignSection } from '@/lib/store-map'
 import type { ListItem, PresetItem } from '@/lib/types'
 import Link from 'next/link'
@@ -22,7 +22,7 @@ const PRESET_CATS = [
 ]
 
 type DraftItem = { id: string; name: string; section: string; order_index: number; qty: number }
-type PageState = 'idle' | 'processing' | 'editing' | 'saving' | 'done'
+type PageState = 'editing' | 'saving' | 'done'
 
 /* ── Tokens ── */
 const S = {
@@ -43,7 +43,7 @@ const S = {
 }
 
 export default function EditPage() {
-  const [state, setState]             = useState<PageState>('idle')
+  const [state, setState]             = useState<PageState>('editing')
   const [listId, setListId]           = useState<string | null>(null)
   const [items, setItems]             = useState<DraftItem[]>([])
   const [presets, setPresets]         = useState<PresetItem[]>([])
@@ -52,14 +52,21 @@ export default function EditPage() {
   const [error, setError]             = useState<string | null>(null)
   const [newItemName, setNewItemName] = useState('')
   const [addingItem, setAddingItem]   = useState(false)
-  const [imagePreview, setImagePreview]       = useState<string | null>(null)
-  const [imageFullscreen, setImageFullscreen] = useState(false)
   const [existingDraft, setExistingDraft]     = useState<{ id: string; created_at: string } | null>(null)
   const [editingId, setEditingId]     = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     async function init() {
+      // Itens vindos da câmera (via sessionStorage)
+      const raw = sessionStorage.getItem('camera_items')
+      if (raw) {
+        sessionStorage.removeItem('camera_items')
+        try {
+          const parsed = JSON.parse(raw) as Array<{ name: string; section: string; order_index: number; qty: number }>
+          setItems(parsed.map((item, i) => ({ id: `new-${i}`, name: item.name, section: item.section, order_index: i, qty: item.qty ?? 1 })))
+        } catch { /* ignora JSON inválido */ }
+      }
+
       const [pr, lr] = await Promise.all([fetch('/api/presets'), fetch('/api/list')])
       const pd = await pr.json()
       const ld = await lr.json()
@@ -68,34 +75,6 @@ export default function EditPage() {
     }
     init().catch(console.error)
   }, [])
-
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0]
-    if (f) processImage(f)
-  }
-
-  async function processImage(file: File) {
-    setState('processing')
-    setError(null)
-    const reader = new FileReader()
-    reader.onload = e => setImagePreview(e.target?.result as string)
-    reader.readAsDataURL(file)
-
-    const fd = new FormData()
-    fd.append('image', file)
-    try {
-      const res  = await fetch('/api/ocr', { method: 'POST', body: fd })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? 'Erro desconhecido')
-      const detected: DraftItem[] = (data.items as Array<{ name: string; section: string; order_index: number; qty: number }>)
-        .map((item, i) => ({ id: `new-${i}`, name: item.name, section: item.section, order_index: i, qty: item.qty ?? 1 }))
-      setItems(detected)
-      setState('editing')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao processar imagem')
-      setState('idle')
-    }
-  }
 
   function removeItem(id: string) {
     setItems(prev => prev.filter(i => i.id !== id))
@@ -184,7 +163,7 @@ export default function EditPage() {
         Ir para o mercado
       </Link>
       <button
-        onClick={() => { setState('idle'); setItems([]); setImagePreview(null); setActivePresets(new Set()) }}
+        onClick={() => { setState('editing'); setItems([]); setActivePresets(new Set()) }}
         style={{ background: 'none', border: 'none', color: S.blue, fontSize: 17, cursor: 'pointer', padding: '10px 20px' }}
       >
         Nova lista
@@ -194,7 +173,7 @@ export default function EditPage() {
 
   // ── MAIN ──────────────────────────────────────────────────
   return (
-    <main style={{ minHeight: '100dvh', background: S.bg, paddingBottom: state === 'editing' ? 96 : 32 }}>
+    <main style={{ minHeight: '100dvh', background: S.bg, paddingBottom: 96 }}>
 
       {/* Header */}
       <header className="apple-header" style={{ padding: '12px 20px 14px' }}>
@@ -204,19 +183,6 @@ export default function EditPage() {
         </Link>
         <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4 }}>Lista de Compras</h1>
       </header>
-
-      {/* Fullscreen image */}
-      {imageFullscreen && imagePreview && (
-        <div
-          onClick={() => setImageFullscreen(false)}
-          style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.94)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-        >
-          <img src={imagePreview} alt="Lista" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-          <div style={{ position: 'absolute', top: 16, right: 16, width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <X size={18} color="#fff" />
-          </div>
-        </div>
-      )}
 
       <div style={{ padding: '16px 16px 0' }}>
 
@@ -232,7 +198,7 @@ export default function EditPage() {
         )}
 
         {/* Existing draft */}
-        {existingDraft && state === 'idle' && (
+        {existingDraft && (
           <div style={{ background: 'rgba(255,149,0,0.1)', border: '0.5px solid rgba(255,149,0,0.35)', borderRadius: 12, padding: '14px 16px', marginBottom: 16 }}>
             <p style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 600, color: S.orange }}>Tem uma lista em andamento</p>
             <div style={{ display: 'flex', gap: 8 }}>
@@ -246,61 +212,9 @@ export default function EditPage() {
           </div>
         )}
 
-        {/* Processing */}
-        {state === 'processing' && (
-          <div style={{ marginBottom: 16 }}>
-            {imagePreview && (
-              <img src={imagePreview} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 12, marginBottom: 12, display: 'block' }} />
-            )}
-            <div style={{ background: S.card, borderRadius: 12, padding: '18px 16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                <Loader2 size={19} color={S.blue} style={{ animation: 'spin 1s linear infinite', flexShrink: 0 }} />
-                <span style={{ fontSize: 16, fontWeight: 600 }}>Lendo a lista…</span>
-              </div>
-              {[72, 55, 80, 62, 68].map((w, i) => (
-                <div key={i} className="skeleton" style={{ height: 18, marginBottom: 10, width: `${w}%` }} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Idle CTA */}
-        {state === 'idle' && (
+        {/* Item list */}
+        {state !== 'done' && (
           <>
-            <input ref={fileInputRef} type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handleFileChange} />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              style={{
-                width: '100%', background: S.blue, color: '#fff', border: 'none',
-                borderRadius: 14, height: 56,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                fontSize: 17, fontWeight: 600, cursor: 'pointer', marginBottom: 10,
-              }}
-            >
-              <Camera size={22} />
-              Tirar foto da lista
-            </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '4px 0 16px' }}>
-              <div style={{ flex: 1, height: 0.5, background: S.sep }} />
-              <span style={{ fontSize: 13, color: S.p3, fontWeight: 500 }}>ou</span>
-              <div style={{ flex: 1, height: 0.5, background: S.sep }} />
-            </div>
-          </>
-        )}
-
-        {/* Editing — item list */}
-        {state === 'editing' && (
-          <>
-            {/* Thumbnail */}
-            {imagePreview && (
-              <button
-                onClick={() => setImageFullscreen(true)}
-                style={{ width: '100%', padding: 0, border: 'none', background: 'none', cursor: 'zoom-in', borderRadius: 12, overflow: 'hidden', display: 'block', marginBottom: 16 }}
-              >
-                <img src={imagePreview} alt="Toque para ampliar" style={{ width: '100%', height: 120, objectFit: 'cover', display: 'block' }} />
-              </button>
-            )}
-
             {/* List */}
             <div className="apple-card" style={{ marginBottom: 10, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
               {items.length === 0 ? (
@@ -457,7 +371,7 @@ export default function EditPage() {
         )}
 
         {/* Presets */}
-        {(state === 'idle' || state === 'editing') && (() => {
+        {state !== 'done' && (() => {
           const grouped = PRESET_CATS
             .map(cat => ({ ...cat, items: presets.filter(p => p.section === cat.id) }))
             .filter(cat => cat.items.length > 0)
@@ -491,7 +405,7 @@ export default function EditPage() {
                             return (
                               <button
                                 key={preset.id}
-                                onClick={() => { if (state === 'idle') setState('editing'); togglePreset(preset) }}
+                                onClick={() => togglePreset(preset)}
                                 style={{
                                   background: active ? S.blue : S.fill3,
                                   color: active ? '#fff' : S.p1,
