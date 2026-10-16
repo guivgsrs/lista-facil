@@ -213,8 +213,7 @@ export default function EditPage() {
         )}
 
         {/* Item list */}
-        {state !== 'done' && (
-          <>
+        <>
             {/* List */}
             <div className="apple-card" style={{ marginBottom: 10, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
               {items.length === 0 ? (
@@ -367,11 +366,10 @@ export default function EditPage() {
                 <span style={{ fontWeight: 500 }}>Novo item</span>
               </button>
             )}
-          </>
-        )}
+        </>
 
         {/* Presets */}
-        {state !== 'done' && (() => {
+        {(() => {
           const grouped = PRESET_CATS
             .map(cat => ({ ...cat, items: presets.filter(p => p.section === cat.id) }))
             .filter(cat => cat.items.length > 0)
