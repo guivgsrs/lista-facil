@@ -155,7 +155,7 @@ export default function HomePage() {
           <Link href="/edit" style={{
             display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
             background: 'linear-gradient(155deg, #1a1a1c 0%, #0e0e10 100%)',
-            borderRadius: 20, minHeight: 172,
+            borderRadius: 20, minHeight: 188,
             padding: '16px 20px',
             textDecoration: 'none', overflow: 'hidden', position: 'relative',
             boxShadow: '0 4px 24px rgba(0,0,0,0.22)',
@@ -175,12 +175,12 @@ export default function HomePage() {
             </p>
           </Link>
 
-          {/* Floating manual button — TOP-LEFT para não sobrepor o texto do bottom */}
+          {/* Floating manual button — TOP-LEFT, sempre branco sobre o fundo escuro da câmera */}
           <Link href="/edit" style={{
             position: 'absolute', left: 12, top: 12,
-            background: 'var(--bg-card)', borderRadius: 14,
-            padding: '14px 10px', width: 112, textAlign: 'center',
-            textDecoration: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.45)',
+            background: '#F2F2F7', borderRadius: 14,
+            padding: '14px 10px', width: 110, textAlign: 'center',
+            textDecoration: 'none', boxShadow: '0 6px 24px rgba(0,0,0,0.5)',
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
           }}>
             <Pencil size={20} color={S.blue} aria-hidden={true} />
