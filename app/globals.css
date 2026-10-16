@@ -8,13 +8,17 @@
   --text-primary: #1C1C1E;
   --text-secondary: #6C6C70;
   --text-tertiary: #AEAEB2;
-  --separator: #E5E5EA;
+  --separator: rgba(60, 60, 67, 0.12);
+  --separator-inset: rgba(60, 60, 67, 0.08);
   --blue: #007AFF;
   --green: #34C759;
   --red: #FF3B30;
   --orange: #FF9500;
+  --gray4: #D1D1D6;
   --gray5: #E5E5EA;
   --gray6: #F2F2F7;
+  --fill-secondary: rgba(120, 120, 128, 0.12);
+  --fill-tertiary: rgba(118, 118, 128, 0.08);
 }
 
 * {
@@ -23,42 +27,48 @@
 }
 
 html, body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
   background: var(--bg);
   color: var(--text-primary);
   min-height: 100dvh;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Skeleton loading animation */
+/* Skeleton shimmer — onda da esquerda para direita (Apple/LinkedIn style) */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #E5E5EA 25%, #F2F2F7 50%, #E5E5EA 75%);
+  background: linear-gradient(90deg, #E5E5EA 25%, #F0F0F5 50%, #E5E5EA 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
+  animation: shimmer 1.6s ease-in-out infinite;
   border-radius: 8px;
 }
 
-/* iOS-style card */
+/* iOS grouped card */
 .card {
   background: var(--bg-card);
   border-radius: 16px;
   overflow: hidden;
 }
 
-/* Smooth button press */
-button:active {
-  opacity: 0.7;
-  transform: scale(0.97);
-  transition: transform 0.1s, opacity 0.1s;
+/* Button pressed state — Apple spring feel */
+button:active:not(:disabled) {
+  opacity: 0.65;
+  transform: scale(0.96);
+  transition: transform 0.08s ease, opacity 0.08s ease;
 }
 
 /* Prevent rubber band on iOS */
 body {
   overscroll-behavior: none;
+}
+
+/* Checked item transition */
+.item-checked {
+  transition: opacity 0.25s ease;
 }

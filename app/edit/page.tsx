@@ -235,14 +235,16 @@ export default function EditPage() {
     <main style={{ minHeight: '100dvh', background: 'var(--bg)', paddingBottom: state === 'editing' ? 100 : 24 }}>
       {/* Header */}
       <header style={{
-        background: 'var(--bg-card)',
+        background: 'rgba(242, 242, 247, 0.85)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
         borderBottom: '1px solid var(--separator)',
         padding: '16px 20px',
         position: 'sticky',
         top: 0,
         zIndex: 10,
       }}>
-        <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>Lista de Compras</h1>
+        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.3 }}>Lista de Compras</h1>
       </header>
 
       {/* Fullscreen image modal */}
