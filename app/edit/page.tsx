@@ -225,8 +225,8 @@ export default function EditPage() {
           <div style={{ background: 'rgba(255,59,48,0.1)', border: '0.5px solid rgba(255,59,48,0.3)', borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
             <AlertCircle size={17} color={S.red} style={{ marginTop: 1, flexShrink: 0 }} />
             <p style={{ flex: 1, margin: 0, fontSize: 14, color: S.red, fontWeight: 500 }}>{error}</p>
-            <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', lineHeight: 1 }}>
-              <X size={15} color={S.p3} />
+            <button onClick={() => setError(null)} aria-label="Fechar" style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', lineHeight: 1, margin: -8 }}>
+              <X size={15} color={S.p3} aria-hidden={true} />
             </button>
           </div>
         )}
@@ -387,15 +387,17 @@ export default function EditPage() {
                           <div style={{ display: 'flex', alignItems: 'center', gap: 0, flexShrink: 0 }}>
                             <button
                               onClick={() => setEditingId(item.id)}
-                              style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', color: S.p3, display: 'flex' }}
+                              aria-label="Editar nome"
+                              style={{ background: 'none', border: 'none', padding: '14px 8px', cursor: 'pointer', color: S.p3, display: 'flex' }}
                             >
-                              <Pencil size={16} />
+                              <Pencil size={16} aria-hidden={true} />
                             </button>
                             <button
                               onClick={() => removeItem(item.id)}
-                              style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', color: S.red, display: 'flex' }}
+                              aria-label="Remover item"
+                              style={{ background: 'none', border: 'none', padding: '14px 8px', cursor: 'pointer', color: S.red, display: 'flex' }}
                             >
-                              <Trash2 size={16} />
+                              <Trash2 size={16} aria-hidden={true} />
                             </button>
                           </div>
                         )}
@@ -421,8 +423,8 @@ export default function EditPage() {
                 <button onClick={addManualItem} style={{ background: S.blue, color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 15, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
                   Ok
                 </button>
-                <button onClick={() => { setAddingItem(false); setNewItemName('') }} style={{ background: 'none', border: 'none', padding: '4px', cursor: 'pointer', flexShrink: 0, display: 'flex' }}>
-                  <X size={18} color={S.p3} />
+                <button onClick={() => { setAddingItem(false); setNewItemName('') }} aria-label="Cancelar" style={{ background: 'none', border: 'none', padding: '12px', cursor: 'pointer', flexShrink: 0, display: 'flex', margin: -8 }}>
+                  <X size={18} color={S.p3} aria-hidden={true} />
                 </button>
               </div>
             ) : (

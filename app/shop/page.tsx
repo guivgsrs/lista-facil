@@ -110,7 +110,7 @@ export default function ShopPage() {
 
   // ── SHOPPING ───────────────────────────────────────────────
   return (
-    <main style={{ minHeight: '100dvh', background: 'var(--bg)', paddingBottom: 48 }}>
+    <main style={{ minHeight: '100dvh', background: 'var(--bg)', paddingBottom: 'calc(48px + env(safe-area-inset-bottom))' }}>
 
       {/* Header */}
       <header className="apple-header" style={{ padding: '12px 20px 14px' }}>
@@ -119,8 +119,8 @@ export default function ShopPage() {
             <ChevronLeft size={20} strokeWidth={2} style={{ marginLeft: -4 }} />
             Início
           </Link>
-          <button onClick={loadList} style={{ background: 'none', border: 'none', padding: '4px', cursor: 'pointer', display: 'flex' }}>
-            <RefreshCw size={19} color="var(--blue)" />
+          <button onClick={loadList} aria-label="Atualizar lista" style={{ background: 'none', border: 'none', padding: '12px', cursor: 'pointer', display: 'flex', margin: -8 }}>
+            <RefreshCw size={19} color="var(--blue)" aria-hidden={true} />
           </button>
         </div>
         <div style={{ marginBottom: 12 }}>
@@ -215,29 +215,37 @@ function CheckRow({ item, isLast, loading, onToggle, onCovabra }: {
   return (
     <div>
       <div style={{
-        display: 'flex', alignItems: 'center', gap: 14,
+        display: 'flex', alignItems: 'center', gap: 5,
         padding: '13px 16px', minHeight: 50,
         opacity: loading ? 0.55 : 1,
         transition: 'opacity 0.15s ease',
       }}>
-        {/* Circle */}
+        {/* Circle — 44pt tap area, 26pt visual */}
         <button
           onClick={onToggle}
           disabled={loading}
+          aria-label={checked ? 'Desmarcar' : 'Marcar como encontrado'}
           style={{
-            width: 26, height: 26, borderRadius: '50%', flexShrink: 0, padding: 0,
-            border: checked ? 'none' : '2px solid var(--gray3)',
-            background: checked ? 'var(--green)' : 'transparent',
+            width: 44, height: 44, borderRadius: '50%', flexShrink: 0, padding: 0,
+            border: 'none', background: 'transparent',
             cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'background 0.2s ease, border-color 0.2s ease',
           }}
         >
-          {checked && (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2.5 7L5.5 10L11.5 4" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
+          <div style={{
+            width: 26, height: 26, borderRadius: '50%',
+            border: checked ? 'none' : '2px solid var(--gray3)',
+            background: checked ? 'var(--green)' : 'transparent',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'background 0.2s ease, border-color 0.2s ease',
+            pointerEvents: 'none',
+          }}>
+            {checked && (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden={true}>
+                <path d="M2.5 7L5.5 10L11.5 4" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+          </div>
         </button>
 
         {/* Name */}
@@ -266,9 +274,10 @@ function CheckRow({ item, isLast, loading, onToggle, onCovabra }: {
             style={{
               background: 'var(--fill-tertiary)',
               border: 'none', borderRadius: 8,
-              padding: '5px 10px', fontSize: 12, fontWeight: 500,
+              padding: '10px 12px', fontSize: 12, fontWeight: 500,
               color: 'var(--label-secondary)',
               cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap',
+              minHeight: 44,
             }}
           >
             Covabra →

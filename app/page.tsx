@@ -94,12 +94,12 @@ export default function HomePage() {
 
   /* ── Ready ── */
   return (
-    <main style={{ minHeight: '100dvh', background: S.bg, paddingBottom: 48 }}>
+    <main style={{ minHeight: '100dvh', background: S.bg, paddingBottom: 'calc(48px + env(safe-area-inset-bottom))' }}>
 
       <header className="apple-header" style={{ padding: '16px 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4 }}>Lista Fácil</h1>
-        <button onClick={load} style={{ background: 'none', border: 'none', padding: 4, cursor: 'pointer', display: 'flex' }}>
-          <RefreshCw size={19} color={S.blue} />
+        <button onClick={load} aria-label="Atualizar" style={{ background: 'none', border: 'none', padding: 12, cursor: 'pointer', display: 'flex', margin: -8 }}>
+          <RefreshCw size={19} color={S.blue} aria-hidden={true} />
         </button>
       </header>
 
@@ -136,12 +136,9 @@ export default function HomePage() {
             border: '0.5px solid rgba(52,199,89,0.3)',
           }}>
             <div style={{ padding: '16px 16px 14px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 6 }}>
-                <div style={{ width: 7, height: 7, borderRadius: '50%', background: S.green }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: S.green, letterSpacing: 0.4, textTransform: 'uppercase' }}>
-                  Lista ativa
-                </span>
-              </div>
+              <p style={{ margin: '0 0 6px', fontSize: 12, fontWeight: 600, color: S.green, letterSpacing: 0.4, textTransform: 'uppercase' }}>
+                Lista ativa
+              </p>
               <p style={{ margin: '0 0 10px', fontSize: 15, color: S.p2 }}>
                 {totalItems === 0
                   ? 'Lista vazia'
@@ -188,12 +185,9 @@ export default function HomePage() {
             border: '0.5px solid rgba(255,149,0,0.3)',
           }}>
             <div style={{ padding: '16px 16px 14px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 6 }}>
-                <div style={{ width: 7, height: 7, borderRadius: '50%', background: S.orange }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: S.orange, letterSpacing: 0.4, textTransform: 'uppercase' }}>
-                  Rascunho em andamento
-                </span>
-              </div>
+              <p style={{ margin: '0 0 6px', fontSize: 12, fontWeight: 600, color: S.orange, letterSpacing: 0.4, textTransform: 'uppercase' }}>
+                Rascunho em andamento
+              </p>
               <p style={{ margin: '0 0 14px', fontSize: 15, color: S.p2 }}>
                 {totalItems === 0 ? 'Sem itens ainda' : `${totalItems} ${totalItems === 1 ? 'item' : 'itens'}`}
                 {' · '}{formatDate(currentList!.created_at)}
