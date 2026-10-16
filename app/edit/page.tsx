@@ -304,9 +304,19 @@ export default function EditPage() {
             {/* List */}
             <div className="apple-card" style={{ marginBottom: 10, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
               {items.length === 0 ? (
-                <div style={{ padding: '32px 16px', textAlign: 'center' }}>
-                  <p style={{ margin: 0, fontSize: 16, fontWeight: 500, color: S.p2 }}>Nenhum item ainda</p>
-                  <p style={{ margin: '4px 0 0', fontSize: 14, color: S.p3 }}>Tire uma foto ou adicione manualmente</p>
+                <div style={{ padding: '32px 20px', textAlign: 'center' }}>
+                  <div style={{ width: 56, height: 56, borderRadius: 16, background: S.fill2, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                    <Plus size={26} color={S.p3} strokeWidth={2} />
+                  </div>
+                  <p style={{ margin: '0 0 4px', fontSize: 16, fontWeight: 600, color: S.p1 }}>Lista vazia</p>
+                  <p style={{ margin: '0 0 20px', fontSize: 14, color: S.p3, lineHeight: 1.5 }}>Tire uma foto da lista manuscrita ou adicione itens manualmente</p>
+                  <button
+                    onClick={() => setAddingItem(true)}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: S.blue, color: '#fff', border: 'none', borderRadius: 12, padding: '12px 24px', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}
+                  >
+                    <Plus size={16} color="#fff" strokeWidth={2.5} />
+                    Adicionar item
+                  </button>
                 </div>
               ) : (
                 [...items].sort((a, b) => a.order_index - b.order_index).map((item, idx) => {

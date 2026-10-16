@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw, ChevronLeft, ShoppingCart } from 'lucide-react'
+import { RefreshCw, ChevronLeft, ShoppingCart, Camera } from 'lucide-react'
 import Link from 'next/link'
 import { SECTIONS, getSectionOrder } from '@/lib/store-map'
 import type { ItemStatus, ListItem, SectionGroup } from '@/lib/types'
@@ -91,19 +91,25 @@ export default function ShopPage() {
   // ── EMPTY ──────────────────────────────────────────────────
   if (pageState === 'empty') return (
     <main style={{ minHeight: '100dvh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 32px' }}>
-      <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--fill-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-        <ShoppingCart size={30} color="var(--label-tertiary)" />
+      <div style={{ width: 72, height: 72, borderRadius: 20, background: 'var(--blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
+        <ShoppingCart size={34} color="#fff" strokeWidth={1.8} />
       </div>
-      <h2 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 8px', letterSpacing: -0.4, textAlign: 'center' }}>Nenhuma lista ativa</h2>
-      <p style={{ color: 'var(--label-secondary)', fontSize: 16, textAlign: 'center', margin: '0 0 36px', lineHeight: 1.5, maxWidth: 260 }}>
-        Peça para criar uma nova lista na tela de edição
+      <h2 style={{ fontSize: 26, fontWeight: 700, margin: '0 0 10px', letterSpacing: -0.4, textAlign: 'center' }}>Nenhuma lista ativa</h2>
+      <p style={{ color: 'var(--label-secondary)', fontSize: 16, textAlign: 'center', margin: '0 0 36px', lineHeight: 1.55, maxWidth: 260 }}>
+        Crie uma lista primeiro para poder usá-la no mercado
       </p>
+      <Link
+        href="/edit"
+        style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'var(--blue)', color: '#fff', borderRadius: 14, padding: '16px 32px', fontSize: 17, fontWeight: 600, textDecoration: 'none', boxShadow: '0 4px 20px rgba(0,122,255,0.3)' }}
+      >
+        <Camera size={21} />
+        Criar lista de compras
+      </Link>
       <button
         onClick={loadList}
-        style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--blue)', color: '#fff', border: 'none', borderRadius: 14, padding: '15px 28px', fontSize: 17, fontWeight: 600, cursor: 'pointer' }}
+        style={{ marginTop: 16, background: 'none', border: 'none', color: 'var(--label-secondary)', fontSize: 15, cursor: 'pointer', padding: '10px 20px' }}
       >
-        <RefreshCw size={18} />
-        Verificar
+        Já criei, atualizar
       </button>
     </main>
   )
