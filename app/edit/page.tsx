@@ -7,18 +7,18 @@ import type { ListItem, PresetItem } from '@/lib/types'
 import Link from 'next/link'
 
 const PRESET_CATS = [
-  { id: 'hortifruti',   label: '🥦 Hortifruti' },
-  { id: 'acougue',      label: '🥩 Açougue' },
-  { id: 'ilha_queijos', label: '🥚 Frios & Ovos' },
-  { id: 'geladeiras',   label: '🧈 Laticínios' },
-  { id: 'c10',          label: '☕ Bebidas' },
-  { id: 'c11',          label: '🍫 Doces' },
-  { id: 'c09',          label: '🍝 Massas' },
-  { id: 'c08',          label: '🧂 Temperos' },
-  { id: 'c07',          label: '🧽 Limpeza' },
-  { id: 'c06',          label: '🧺 Roupa' },
-  { id: 'c04',          label: '🧻 Higiene' },
-  { id: 'sem_secao',    label: '📦 Outros' },
+  { id: 'hortifruti',   label: 'Hortifruti' },
+  { id: 'acougue',      label: 'Açougue' },
+  { id: 'ilha_queijos', label: 'Frios & Ovos' },
+  { id: 'geladeiras',   label: 'Laticínios' },
+  { id: 'c10',          label: 'Bebidas' },
+  { id: 'c11',          label: 'Doces' },
+  { id: 'c09',          label: 'Massas' },
+  { id: 'c08',          label: 'Temperos' },
+  { id: 'c07',          label: 'Limpeza' },
+  { id: 'c06',          label: 'Roupa' },
+  { id: 'c04',          label: 'Higiene' },
+  { id: 'sem_secao',    label: 'Outros' },
 ]
 
 type DraftItem = { id: string; name: string; section: string; order_index: number; qty: number }

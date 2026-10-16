@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Camera, ShoppingCart, Clock, ChevronRight, Plus, RefreshCw } from 'lucide-react'
+import { Camera, ShoppingCart, Clock, ChevronRight, Plus, RefreshCw, ListChecks } from 'lucide-react'
 import type { ListItem } from '@/lib/types'
 
 interface CompletedList {
@@ -108,7 +108,9 @@ export default function HomePage() {
         {/* ── First-time empty state ── */}
         {isFirstTime && (
           <div style={{ textAlign: 'center', padding: '52px 24px 40px' }}>
-            <div style={{ fontSize: 68, marginBottom: 20, lineHeight: 1 }}>🛒</div>
+            <div style={{ width: 72, height: 72, borderRadius: 20, background: S.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
+              <ListChecks size={34} color="#fff" strokeWidth={1.8} />
+            </div>
             <h2 style={{ fontSize: 26, fontWeight: 700, margin: '0 0 10px', letterSpacing: -0.4 }}>Bem-vindos!</h2>
             <p style={{ color: S.p2, fontSize: 16, lineHeight: 1.55, margin: '0 0 36px', maxWidth: 270, marginLeft: 'auto', marginRight: 'auto' }}>
               Fotografe a lista manuscrita ou adicione os itens à mão
@@ -144,7 +146,7 @@ export default function HomePage() {
                 {totalItems === 0
                   ? 'Lista vazia'
                   : doneItems === totalItems
-                    ? `${totalItems} itens — tudo encontrado 🎉`
+                    ? `${totalItems} itens — tudo encontrado`
                     : `${doneItems} de ${totalItems} itens encontrados`}
               </p>
               {totalItems > 0 && (

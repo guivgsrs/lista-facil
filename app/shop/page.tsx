@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw, ChevronLeft } from 'lucide-react'
+import { RefreshCw, ChevronLeft, ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
 import { SECTIONS, getSectionOrder } from '@/lib/store-map'
 import type { ItemStatus, ListItem, SectionGroup } from '@/lib/types'
@@ -91,7 +91,9 @@ export default function ShopPage() {
   // ── EMPTY ──────────────────────────────────────────────────
   if (pageState === 'empty') return (
     <main style={{ minHeight: '100dvh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 32px' }}>
-      <div style={{ fontSize: 60, marginBottom: 20, lineHeight: 1 }}>🛒</div>
+      <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--fill-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+        <ShoppingCart size={30} color="var(--label-tertiary)" />
+      </div>
       <h2 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 8px', letterSpacing: -0.4, textAlign: 'center' }}>Nenhuma lista ativa</h2>
       <p style={{ color: 'var(--label-secondary)', fontSize: 16, textAlign: 'center', margin: '0 0 36px', lineHeight: 1.5, maxWidth: 260 }}>
         Peça para criar uma nova lista na tela de edição
@@ -123,7 +125,7 @@ export default function ShopPage() {
         </div>
         <div style={{ marginBottom: 12 }}>
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4 }}>
-            {allDone ? 'Tudo certo 🎉' : 'Mercado'}
+            {allDone ? 'Tudo certo!' : 'Mercado'}
           </h1>
           <p style={{ margin: '3px 0 0', fontSize: 13, color: 'var(--label-secondary)' }}>
             {done} de {total} itens
