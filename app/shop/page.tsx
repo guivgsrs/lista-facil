@@ -73,17 +73,24 @@ export default function ShopPage() {
 
   // ── LOADING ────────────────────────────────────────────────
   if (pageState === 'loading') return (
-    <main style={{ minHeight: '100dvh', background: 'var(--bg)', padding: '60px 16px 24px' }}>
-      <div className="skeleton" style={{ height: 30, width: '45%', marginBottom: 6, borderRadius: 10 }} />
-      <div className="skeleton" style={{ height: 14, width: '28%', marginBottom: 20 }} />
-      <div className="skeleton" style={{ height: 5, marginBottom: 28, borderRadius: 3 }} />
-      <div style={{ background: 'var(--bg-card)', borderRadius: 12, overflow: 'hidden' }}>
-        {[78, 55, 70, 62, 80, 50].map((w, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderBottom: i < 5 ? '0.5px solid var(--separator-inset)' : 'none' }}>
-            <div className="skeleton" style={{ width: 26, height: 26, borderRadius: '50%', flexShrink: 0 }} />
-            <div className="skeleton" style={{ height: 17, width: `${w}%` }} />
-          </div>
-        ))}
+    <main style={{ minHeight: '100dvh', background: 'var(--bg)' }}>
+      <header className="apple-header" style={{ padding: '12px 20px', display: 'flex', justifyContent: 'center' }}>
+        <div className="skeleton" style={{ height: 32, width: 160, borderRadius: 9 }} />
+      </header>
+      <div style={{ padding: '14px 20px 14px' }}>
+        <div className="skeleton" style={{ height: 28, width: '45%', marginBottom: 6, borderRadius: 8 }} />
+        <div className="skeleton" style={{ height: 14, width: '28%', marginBottom: 14 }} />
+        <div className="skeleton" style={{ height: 4, marginBottom: 20, borderRadius: 2 }} />
+      </div>
+      <div style={{ padding: '0 16px' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: 12, overflow: 'hidden' }}>
+          {[78, 55, 70, 62, 80, 50].map((w, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderBottom: i < 5 ? '0.5px solid var(--separator-inset)' : 'none' }}>
+              <div className="skeleton" style={{ width: 26, height: 26, borderRadius: '50%', flexShrink: 0 }} />
+              <div className="skeleton" style={{ height: 17, width: `${w}%` }} />
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   )
@@ -118,41 +125,40 @@ export default function ShopPage() {
   return (
     <main style={{ minHeight: '100dvh', background: 'var(--bg)', paddingBottom: 'calc(48px + env(safe-area-inset-bottom))' }}>
 
-      {/* Header */}
-      <header className="apple-header" style={{ padding: '12px 20px 14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-          <h1 style={{ margin: 0, fontSize: 17, fontWeight: 600, letterSpacing: -0.2, color: 'var(--label-primary)' }}>
-            {allDone ? 'Tudo certo!' : 'Lista de mercado'}
-          </h1>
-          {/* Segmented control inline */}
-          <div style={{ display: 'flex', background: 'var(--fill-tertiary)', borderRadius: 9, padding: 2, gap: 2, flexShrink: 0 }}>
-            <Link href="/" style={{
-              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
-              borderRadius: 7, textDecoration: 'none', fontSize: 13, fontWeight: 400,
-              background: 'transparent', color: 'var(--label-secondary)',
-              transition: 'background 0.18s ease',
-            }}>
-              <Pencil size={13} aria-hidden={true} />Criar
-            </Link>
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
-              borderRadius: 7, fontSize: 13, fontWeight: 600,
-              background: 'var(--bg-elevated)', color: 'var(--label-primary)',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.18)',
-            }}>
-              <ShoppingCart size={13} aria-hidden={true} />Mercado
-            </div>
+      {/* Nav bar: só o segmented control, centralizado */}
+      <header className="apple-header" style={{ padding: '12px 20px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', background: 'var(--fill-tertiary)', borderRadius: 9, padding: 2, gap: 2 }}>
+          <Link href="/" style={{
+            display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
+            borderRadius: 7, textDecoration: 'none', fontSize: 13, fontWeight: 400,
+            background: 'transparent', color: 'var(--label-secondary)',
+          }}>
+            <Pencil size={13} aria-hidden={true} />Criar
+          </Link>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
+            borderRadius: 7, fontSize: 13, fontWeight: 600,
+            background: 'var(--bg-elevated)', color: 'var(--label-primary)',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.18)',
+          }}>
+            <ShoppingCart size={13} aria-hidden={true} />Mercado
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-          <p style={{ margin: 0, fontSize: 13, color: 'var(--label-secondary)' }}>
-            {done} de {total} itens
-          </p>
-          <button onClick={loadList} aria-label="Atualizar lista" style={{ background: 'none', border: 'none', padding: '12px 8px', cursor: 'pointer', display: 'flex', margin: '-8px -8px -8px 0', minHeight: 44, alignItems: 'center' }}>
+      </header>
+
+      {/* Sub-header: título + contagem + progress — sticky */}
+      <div className="apple-header" style={{ padding: '14px 20px 14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4, color: 'var(--label-primary)' }}>
+            {allDone ? 'Tudo certo!' : 'Lista de mercado'}
+          </h1>
+          <button onClick={loadList} aria-label="Atualizar lista" style={{ background: 'none', border: 'none', padding: '10px 0 10px 14px', cursor: 'pointer', display: 'flex', minHeight: 44, alignItems: 'center' }}>
             <RefreshCw size={16} color="var(--label-tertiary)" aria-hidden={true} />
           </button>
         </div>
-
+        <p style={{ margin: '0 0 10px', fontSize: 13, color: 'var(--label-secondary)' }}>
+          {done} de {total} itens
+        </p>
         {/* Progress */}
         <div style={{ height: 4, background: 'var(--fill-tertiary)', borderRadius: 2, overflow: 'hidden' }}>
           <div style={{
@@ -162,7 +168,7 @@ export default function ShopPage() {
             transition: 'width 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s ease',
           }} />
         </div>
-      </header>
+      </div>
 
       <div style={{ padding: '20px 16px 0' }}>
 

@@ -61,18 +61,16 @@ function SegmentedControl({ active }: { active: 'edit' | 'shop' }) {
   )
 }
 
-/* Corner marks that simulate a camera viewfinder */
+/* Two corner marks — top-right and bottom-right of the camera viewfinder area */
 function ViewfinderCorners() {
   const base: React.CSSProperties = {
-    position: 'absolute', width: 16, height: 16,
-    borderColor: 'rgba(255,255,255,0.22)',
+    position: 'absolute', width: 18, height: 18,
+    borderColor: 'rgba(255,255,255,0.28)',
   }
   return (
     <>
-      <div style={{ ...base, top: 14, left: 140, borderTop: '2px solid', borderLeft: '2px solid', borderTopLeftRadius: 3 }} />
       <div style={{ ...base, top: 14, right: 14, borderTop: '2px solid', borderRight: '2px solid', borderTopRightRadius: 3 }} />
-      <div style={{ ...base, bottom: 14, left: 140, borderBottom: '2px solid', borderLeft: '2px solid', borderBottomLeftRadius: 3 }} />
-      <div style={{ ...base, bottom: 14, right: 14, borderBottom: '2px solid', borderRight: '2px solid', borderBottomRightRadius: 3 }} />
+      <div style={{ ...base, bottom: 52, right: 14, borderBottom: '2px solid', borderRight: '2px solid', borderBottomRightRadius: 3 }} />
     </>
   )
 }
@@ -111,13 +109,12 @@ export default function HomePage() {
   /* ── Loading ── */
   if (loading) return (
     <main style={{ minHeight: '100dvh', background: S.bg }}>
-      <header className="apple-header" style={{ padding: '14px 20px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div className="skeleton" style={{ height: 21, width: 140, borderRadius: 6 }} />
-        <div className="skeleton" style={{ height: 32, width: 128, borderRadius: 9 }} />
+      <header className="apple-header" style={{ padding: '12px 20px', display: 'flex', justifyContent: 'center' }}>
+        <div className="skeleton" style={{ height: 32, width: 160, borderRadius: 9 }} />
       </header>
-      <div style={{ padding: '20px 16px 0' }}>
-        <div className="skeleton" style={{ height: 168, borderRadius: 20, marginBottom: 10 }} />
-        <div className="skeleton" style={{ height: 52, borderRadius: 14, marginBottom: 24 }} />
+      <div style={{ padding: '16px 16px 0' }}>
+        <div className="skeleton" style={{ height: 32, width: 200, borderRadius: 8, marginBottom: 16 }} />
+        <div className="skeleton" style={{ height: 172, borderRadius: 20, marginBottom: 10 }} />
         <div className="skeleton" style={{ height: 13, width: '30%', marginBottom: 8 }} />
         <div style={{ background: S.card, borderRadius: 12, overflow: 'hidden' }}>
           {[0, 1].map(i => (
@@ -139,29 +136,34 @@ export default function HomePage() {
   return (
     <main style={{ minHeight: '100dvh', background: S.bg, paddingBottom: 'calc(48px + env(safe-area-inset-bottom))' }}>
 
-      <header className="apple-header" style={{ padding: '14px 20px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ margin: 0, fontSize: 17, fontWeight: 600, letterSpacing: -0.2, color: 'var(--label-primary)' }}>Lista de mercado</h1>
+      {/* Nav bar: apenas o segmented control, centralizado */}
+      <header className="apple-header" style={{ padding: '12px 20px', display: 'flex', justifyContent: 'center' }}>
         <SegmentedControl active="edit" />
       </header>
 
-      <div style={{ padding: '20px 16px 0' }}>
+      <div style={{ padding: '16px 16px 0' }}>
+
+        {/* Título da página */}
+        <h1 style={{ margin: '0 0 16px', fontSize: 26, fontWeight: 700, letterSpacing: -0.5, color: S.p1 }}>
+          Lista de mercado
+        </h1>
 
         {/* ── Scanner CTA — dark card like camera viewfinder ── */}
         <div style={{ position: 'relative', marginBottom: 10 }}>
 
-          {/* Dark camera area (primary) */}
+          {/* Dark camera area (primary) — texto no BOTTOM, sem conflito de espaço */}
           <Link href="/edit" style={{
             display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
             background: 'linear-gradient(155deg, #1a1a1c 0%, #0e0e10 100%)',
-            borderRadius: 20, minHeight: 168,
-            padding: '20px 20px 20px 152px',
+            borderRadius: 20, minHeight: 172,
+            padding: '16px 20px',
             textDecoration: 'none', overflow: 'hidden', position: 'relative',
             boxShadow: '0 4px 24px rgba(0,0,0,0.22)',
           }}>
             <Camera
-              size={80}
+              size={88}
               color="rgba(255,255,255,0.06)"
-              style={{ position: 'absolute', top: '50%', left: '62%', transform: 'translate(-50%, -50%)' }}
+              style={{ position: 'absolute', top: '50%', right: '18%', transform: 'translateY(-60%)' }}
               aria-hidden={true}
             />
             <ViewfinderCorners />
@@ -173,15 +175,15 @@ export default function HomePage() {
             </p>
           </Link>
 
-          {/* Floating manual button — left side (secondary) */}
+          {/* Floating manual button — TOP-LEFT para não sobrepor o texto do bottom */}
           <Link href="/edit" style={{
-            position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
-            background: '#fff', borderRadius: 14,
-            padding: '16px 10px', width: 120, textAlign: 'center',
-            textDecoration: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.38)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
+            position: 'absolute', left: 12, top: 12,
+            background: 'var(--bg-card)', borderRadius: 14,
+            padding: '14px 10px', width: 112, textAlign: 'center',
+            textDecoration: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.45)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
           }}>
-            <Pencil size={22} color={S.blue} aria-hidden={true} />
+            <Pencil size={20} color={S.blue} aria-hidden={true} />
             <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: S.blue, textTransform: 'uppercase', letterSpacing: 0.5, lineHeight: 1.5, textAlign: 'center' }}>
               Adicionar<br />manualmente
             </p>
