@@ -16,8 +16,12 @@ CREATE TABLE list_items (
   section TEXT NOT NULL DEFAULT 'sem_secao',
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'found', 'not_found')),
   order_index INTEGER DEFAULT 0,
+  qty INTEGER NOT NULL DEFAULT 1,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migração (rode se a tabela já existia):
+-- ALTER TABLE list_items ADD COLUMN IF NOT EXISTS qty INTEGER NOT NULL DEFAULT 1;
 
 -- Itens frequentes (presets para toggle rápido)
 CREATE TABLE preset_items (

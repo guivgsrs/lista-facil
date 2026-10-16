@@ -17,10 +17,10 @@ export async function POST(req: NextRequest) {
 
     const rawItems = await ocrShoppingList(base64, mimeType)
 
-    // Auto-assign sections to detected items
-    const items = rawItems.map((name, index) => ({
-      name: name.trim(),
-      section: assignSection(name),
+    const items = rawItems.map((item, index) => ({
+      name: item.name,
+      qty: item.qty,
+      section: assignSection(item.name),
       order_index: index,
     }))
 

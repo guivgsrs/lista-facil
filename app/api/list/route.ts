@@ -37,7 +37,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const supabase = getSupabase()
   const body = await req.json()
-  const { items } = body as { items: Array<{ name: string; section: string; order_index: number }> }
+  const { items } = body as { items: Array<{ name: string; section: string; order_index: number; qty: number }> }
 
   // Archive any existing draft lists
   await supabase

@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Camera, Plus, Trash2, ChevronDown, ChevronUp, CheckCircle2, Loader2, AlertCircle, X } from 'lucide-react'
+import { Camera, Plus, Trash2, ChevronDown, ChevronUp, CheckCircle2, Loader2, AlertCircle, X, Pencil } from 'lucide-react'
 import { assignSection } from '@/lib/store-map'
 import type { ListItem, PresetItem } from '@/lib/types'
 import Link from 'next/link'
 
-type DraftItem = { id: string; name: string; section: string; order_index: number }
+type DraftItem = { id: string; name: string; section: string; order_index: number; qty: number }
 
 type PageState =
   | 'idle'
@@ -26,10 +26,11 @@ export default function EditPage() {
   const [newItemName, setNewItemName] = useState('')
   const [addingItem, setAddingItem] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageFullscreen, setImageFullscreen] = useState(false)
   const [existingDraft, setExistingDraft] = useState<{ id: string; created_at: string } | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Load presets and check for existing draft
   useEffect(() => {
     async function init() {
       const [presetsRes, listRes] = await Promise.all([
@@ -71,8 +72,8 @@ export default function EditPage() {
 
       if (!res.ok) throw new Error(data.error ?? 'Erro desconhecido')
 
-      const detected: DraftItem[] = (data.items as Array<{ name: string; section: string; order_index: number }>)
-        .map((item, i) => ({ id: `new-${i}`, name: item.name, section: item.section, order_index: i }))
+      const detected: DraftItem[] = (data.items as Array<{ name: string; section: string; order_index: number; qty: number }>)
+        .map((item, i) => ({ id: `new-${i}`, name: item.name, section: item.section, order_index: i, qty: item.qty ?? 1 }))
 
       setItems(detected)
       setState('editing')
@@ -84,11 +85,18 @@ export default function EditPage() {
 
   function removeItem(id: string) {
     setItems(prev => prev.filter(i => i.id !== id))
+    if (editingId === id) setEditingId(null)
   }
 
   function updateItemName(id: string, name: string) {
     setItems(prev => prev.map(i =>
       i.id === id ? { ...i, name, section: assignSection(name) } : i
+    ))
+  }
+
+  function updateItemQty(id: string, qty: number) {
+    setItems(prev => prev.map(i =>
+      i.id === id ? { ...i, qty: Math.max(1, qty) } : i
     ))
   }
 
@@ -106,6 +114,7 @@ export default function EditPage() {
           name: preset.name,
           section: preset.section,
           order_index: prev.length,
+          qty: 1,
         },
       ])
     }
@@ -122,6 +131,7 @@ export default function EditPage() {
         name,
         section: assignSection(name),
         order_index: prev.length,
+        qty: 1,
       },
     ])
     setNewItemName('')
@@ -141,6 +151,7 @@ export default function EditPage() {
             name: item.name,
             section: item.section,
             order_index: i,
+            qty: item.qty,
           })),
         }),
       })
@@ -148,7 +159,6 @@ export default function EditPage() {
       if (!res.ok) throw new Error(data.error)
 
       const { list } = data
-      // Finalize (set to active)
       await fetch('/api/list', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -172,6 +182,7 @@ export default function EditPage() {
       name: item.name,
       section: item.section,
       order_index: item.order_index,
+      qty: item.qty ?? 1,
     }))
     setItems(loaded)
     setListId(existingDraft.id)
@@ -232,8 +243,36 @@ export default function EditPage() {
         zIndex: 10,
       }}>
         <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>Lista de Compras</h1>
-        <p style={{ margin: '2px 0 0', fontSize: 13, color: 'var(--text-secondary)' }}>Página da esposa</p>
       </header>
+
+      {/* Fullscreen image modal */}
+      {imageFullscreen && imagePreview && (
+        <div
+          onClick={() => setImageFullscreen(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 200,
+            background: 'rgba(0,0,0,0.92)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          <img
+            src={imagePreview}
+            alt="Lista original"
+            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+          />
+          <button
+            style={{
+              position: 'absolute', top: 16, right: 16,
+              background: 'rgba(255,255,255,0.15)', border: 'none',
+              borderRadius: '50%', width: 40, height: 40,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <X size={20} color="#fff" />
+          </button>
+        </div>
+      )}
 
       <div style={{ padding: '16px 16px 0' }}>
         {/* Error toast */}
@@ -350,7 +389,16 @@ export default function EditPage() {
           <>
             {imagePreview && (
               <div style={{ marginBottom: 12 }}>
-                <img src={imagePreview} alt="Lista original" style={{ width: '100%', maxHeight: 140, objectFit: 'cover', borderRadius: 14 }} />
+                <button
+                  onClick={() => setImageFullscreen(true)}
+                  style={{ width: '100%', padding: 0, border: 'none', background: 'none', cursor: 'zoom-in', borderRadius: 14, overflow: 'hidden', display: 'block' }}
+                >
+                  <img
+                    src={imagePreview}
+                    alt="Lista original — toque para ampliar"
+                    style={{ width: '100%', maxHeight: 140, objectFit: 'cover', display: 'block' }}
+                  />
+                </button>
               </div>
             )}
 
@@ -363,40 +411,96 @@ export default function EditPage() {
                   </p>
                 </div>
               ) : (
-                [...items].sort((a, b) => a.order_index - b.order_index).map((item, idx) => (
-                  <div
-                    key={item.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 10,
-                      padding: '12px 16px',
-                      borderBottom: idx < items.length - 1 ? '1px solid var(--separator)' : 'none',
-                    }}
-                  >
-                    <div style={{ flex: 1 }}>
-                      <input
-                        value={item.name}
-                        onChange={e => updateItemName(item.id, e.target.value)}
-                        style={{
-                          width: '100%',
-                          border: 'none',
-                          background: 'none',
-                          fontSize: 16,
-                          color: 'var(--text-primary)',
-                          outline: 'none',
-                          padding: 0,
-                        }}
-                      />
-                    </div>
-                    <button
-                      onClick={() => removeItem(item.id)}
-                      style={{ background: 'none', border: 'none', padding: '4px', cursor: 'pointer', flexShrink: 0 }}
+                [...items].sort((a, b) => a.order_index - b.order_index).map((item, idx) => {
+                  const isEditing = editingId === item.id
+                  return (
+                    <div
+                      key={item.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        padding: isEditing ? '10px 12px' : '11px 16px',
+                        borderBottom: idx < items.length - 1 ? '1px solid var(--separator)' : 'none',
+                        background: isEditing ? 'var(--bg)' : undefined,
+                      }}
                     >
-                      <Trash2 size={18} color="var(--red)" />
-                    </button>
-                  </div>
-                ))
+                      {isEditing ? (
+                        <>
+                          {/* Qty stepper */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                            <button
+                              onClick={() => updateItemQty(item.id, item.qty - 1)}
+                              style={{ width: 28, height: 28, border: '1px solid var(--separator)', borderRadius: 6, background: 'var(--bg-card)', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}
+                            >−</button>
+                            <input
+                              type="number"
+                              value={item.qty}
+                              onChange={e => updateItemQty(item.id, parseInt(e.target.value) || 1)}
+                              min={1}
+                              style={{ width: 36, border: '1px solid var(--separator)', borderRadius: 6, padding: '4px 2px', fontSize: 15, textAlign: 'center', background: 'var(--bg-card)' }}
+                            />
+                            <button
+                              onClick={() => updateItemQty(item.id, item.qty + 1)}
+                              style={{ width: 28, height: 28, border: '1px solid var(--separator)', borderRadius: 6, background: 'var(--bg-card)', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--blue)' }}
+                            >+</button>
+                          </div>
+                          {/* Name input */}
+                          <input
+                            autoFocus
+                            value={item.name}
+                            onChange={e => updateItemName(item.id, e.target.value)}
+                            onBlur={() => setEditingId(null)}
+                            onKeyDown={e => { if (e.key === 'Enter') setEditingId(null) }}
+                            style={{
+                              flex: 1,
+                              border: '1px solid var(--separator)',
+                              borderRadius: 8,
+                              padding: '6px 10px',
+                              fontSize: 15,
+                              color: 'var(--text-primary)',
+                              background: 'var(--bg-card)',
+                              outline: 'none',
+                            }}
+                          />
+                        </>
+                      ) : (
+                        /* Display mode */
+                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                          <span style={{
+                            fontSize: 13, fontWeight: 600,
+                            color: 'var(--bg-card)',
+                            background: 'var(--text-secondary)',
+                            borderRadius: 10,
+                            padding: '1px 7px',
+                            flexShrink: 0,
+                          }}>
+                            {item.qty}
+                          </span>
+                          <span style={{ fontSize: 16, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {item.name}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Action icons */}
+                      <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+                        <button
+                          onClick={() => setEditingId(isEditing ? null : item.id)}
+                          style={{ background: 'none', border: 'none', padding: '6px', cursor: 'pointer', borderRadius: 6 }}
+                        >
+                          <Pencil size={17} color={isEditing ? 'var(--blue)' : 'var(--text-tertiary)'} />
+                        </button>
+                        <button
+                          onClick={() => removeItem(item.id)}
+                          style={{ background: 'none', border: 'none', padding: '6px', cursor: 'pointer', borderRadius: 6 }}
+                        >
+                          <Trash2 size={17} color="var(--red)" />
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })
               )}
             </div>
 

@@ -8,6 +8,7 @@ export interface ListItem {
   section: string
   status: ItemStatus
   order_index: number
+  qty: number
   created_at: string
 }
 
