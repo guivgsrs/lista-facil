@@ -120,37 +120,36 @@ export default function ShopPage() {
 
       {/* Header */}
       <header className="apple-header" style={{ padding: '12px 20px 14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <h1 style={{ margin: 0, fontSize: 17, fontWeight: 600, letterSpacing: -0.2, color: 'var(--label-primary)' }}>
             {allDone ? 'Tudo certo!' : 'Lista de mercado'}
           </h1>
           {/* Segmented control inline */}
-          <div style={{ display: 'flex', background: 'var(--fill-secondary)', borderRadius: 9, padding: 2, gap: 2 }}>
+          <div style={{ display: 'flex', background: 'var(--fill-tertiary)', borderRadius: 9, padding: 2, gap: 2, flexShrink: 0 }}>
             <Link href="/" style={{
-              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px',
+              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
               borderRadius: 7, textDecoration: 'none', fontSize: 13, fontWeight: 400,
               background: 'transparent', color: 'var(--label-secondary)',
+              transition: 'background 0.18s ease',
             }}>
-              <Pencil size={13} aria-hidden={true} />
-              Criar
+              <Pencil size={13} aria-hidden={true} />Criar
             </Link>
             <div style={{
-              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px',
+              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
               borderRadius: 7, fontSize: 13, fontWeight: 600,
-              background: 'var(--bg-card)', color: 'var(--label-primary)',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.14)',
+              background: 'var(--bg-elevated)', color: 'var(--label-primary)',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.18)',
             }}>
-              <ShoppingCart size={13} aria-hidden={true} />
-              Mercado
+              <ShoppingCart size={13} aria-hidden={true} />Mercado
             </div>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <p style={{ margin: 0, fontSize: 13, color: 'var(--label-secondary)' }}>
             {done} de {total} itens
           </p>
-          <button onClick={loadList} aria-label="Atualizar lista" style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', display: 'flex', margin: '-4px -8px -4px 0' }}>
-            <RefreshCw size={15} color="var(--label-tertiary)" aria-hidden={true} />
+          <button onClick={loadList} aria-label="Atualizar lista" style={{ background: 'none', border: 'none', padding: '12px 8px', cursor: 'pointer', display: 'flex', margin: '-8px -8px -8px 0', minHeight: 44, alignItems: 'center' }}>
+            <RefreshCw size={16} color="var(--label-tertiary)" aria-hidden={true} />
           </button>
         </div>
 

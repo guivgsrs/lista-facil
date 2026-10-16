@@ -40,29 +40,22 @@ function formatDate(dateStr: string): string {
 }
 
 function SegmentedControl({ active }: { active: 'edit' | 'shop' }) {
+  const segStyle = (isActive: boolean): React.CSSProperties => ({
+    display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
+    borderRadius: 7, textDecoration: 'none', fontSize: 13,
+    background: isActive ? 'var(--bg-elevated)' : 'transparent',
+    color: isActive ? 'var(--label-primary)' : 'var(--label-secondary)',
+    fontWeight: isActive ? 600 : 400,
+    boxShadow: isActive ? '0 1px 3px rgba(0,0,0,0.18)' : 'none',
+    transition: 'background 0.18s ease, color 0.18s ease',
+  })
   return (
-    <div style={{ display: 'flex', background: 'var(--fill-secondary)', borderRadius: 9, padding: 2, gap: 2 }}>
-      <Link href="/" style={{
-        display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px',
-        borderRadius: 7, textDecoration: 'none', fontSize: 13,
-        background: active === 'edit' ? 'var(--bg-card)' : 'transparent',
-        color: active === 'edit' ? 'var(--label-primary)' : 'var(--label-secondary)',
-        fontWeight: active === 'edit' ? 600 : 400,
-        boxShadow: active === 'edit' ? '0 1px 3px rgba(0,0,0,0.14)' : 'none',
-      }}>
-        <Pencil size={13} aria-hidden={true} />
-        Criar
+    <div style={{ display: 'flex', background: 'var(--fill-tertiary)', borderRadius: 9, padding: 2, gap: 2 }}>
+      <Link href="/" style={segStyle(active === 'edit')}>
+        <Pencil size={13} aria-hidden={true} />Criar
       </Link>
-      <Link href="/shop" style={{
-        display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px',
-        borderRadius: 7, textDecoration: 'none', fontSize: 13,
-        background: active === 'shop' ? 'var(--bg-card)' : 'transparent',
-        color: active === 'shop' ? 'var(--label-primary)' : 'var(--label-secondary)',
-        fontWeight: active === 'shop' ? 600 : 400,
-        boxShadow: active === 'shop' ? '0 1px 3px rgba(0,0,0,0.14)' : 'none',
-      }}>
-        <ShoppingCart size={13} aria-hidden={true} />
-        Mercado
+      <Link href="/shop" style={segStyle(active === 'shop')}>
+        <ShoppingCart size={13} aria-hidden={true} />Mercado
       </Link>
     </div>
   )
@@ -76,9 +69,9 @@ function ViewfinderCorners() {
   }
   return (
     <>
-      <div style={{ ...base, top: 14, left: 136, borderTop: '2px solid', borderLeft: '2px solid', borderTopLeftRadius: 3 }} />
+      <div style={{ ...base, top: 14, left: 140, borderTop: '2px solid', borderLeft: '2px solid', borderTopLeftRadius: 3 }} />
       <div style={{ ...base, top: 14, right: 14, borderTop: '2px solid', borderRight: '2px solid', borderTopRightRadius: 3 }} />
-      <div style={{ ...base, bottom: 14, left: 136, borderBottom: '2px solid', borderLeft: '2px solid', borderBottomLeftRadius: 3 }} />
+      <div style={{ ...base, bottom: 14, left: 140, borderBottom: '2px solid', borderLeft: '2px solid', borderBottomLeftRadius: 3 }} />
       <div style={{ ...base, bottom: 14, right: 14, borderBottom: '2px solid', borderRight: '2px solid', borderBottomRightRadius: 3 }} />
     </>
   )
@@ -118,9 +111,9 @@ export default function HomePage() {
   /* ── Loading ── */
   if (loading) return (
     <main style={{ minHeight: '100dvh', background: S.bg }}>
-      <header className="apple-header" style={{ padding: '16px 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div className="skeleton" style={{ height: 28, width: 160, borderRadius: 8 }} />
-        <div className="skeleton" style={{ height: 34, width: 132, borderRadius: 9 }} />
+      <header className="apple-header" style={{ padding: '14px 20px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="skeleton" style={{ height: 21, width: 140, borderRadius: 6 }} />
+        <div className="skeleton" style={{ height: 32, width: 128, borderRadius: 9 }} />
       </header>
       <div style={{ padding: '20px 16px 0' }}>
         <div className="skeleton" style={{ height: 168, borderRadius: 20, marginBottom: 10 }} />
@@ -146,8 +139,8 @@ export default function HomePage() {
   return (
     <main style={{ minHeight: '100dvh', background: S.bg, paddingBottom: 'calc(48px + env(safe-area-inset-bottom))' }}>
 
-      <header className="apple-header" style={{ padding: '16px 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4 }}>Lista de mercado</h1>
+      <header className="apple-header" style={{ padding: '14px 20px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h1 style={{ margin: 0, fontSize: 17, fontWeight: 600, letterSpacing: -0.2, color: 'var(--label-primary)' }}>Lista de mercado</h1>
         <SegmentedControl active="edit" />
       </header>
 
@@ -161,7 +154,7 @@ export default function HomePage() {
             display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
             background: 'linear-gradient(155deg, #1a1a1c 0%, #0e0e10 100%)',
             borderRadius: 20, minHeight: 168,
-            padding: '20px 20px 20px 148px',
+            padding: '20px 20px 20px 152px',
             textDecoration: 'none', overflow: 'hidden', position: 'relative',
             boxShadow: '0 4px 24px rgba(0,0,0,0.22)',
           }}>
@@ -184,13 +177,13 @@ export default function HomePage() {
           <Link href="/edit" style={{
             position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
             background: '#fff', borderRadius: 14,
-            padding: '14px 10px', width: 114, textAlign: 'center',
+            padding: '16px 10px', width: 120, textAlign: 'center',
             textDecoration: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.38)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 9,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
           }}>
-            <Pencil size={20} color={S.blue} aria-hidden={true} />
-            <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: S.blue, textTransform: 'uppercase', letterSpacing: 0.4, lineHeight: 1.45 }}>
-              {'ADICIONAR\nMANUALMENTE'}
+            <Pencil size={22} color={S.blue} aria-hidden={true} />
+            <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: S.blue, textTransform: 'uppercase', letterSpacing: 0.5, lineHeight: 1.5, textAlign: 'center' }}>
+              Adicionar<br />manualmente
             </p>
           </Link>
         </div>
