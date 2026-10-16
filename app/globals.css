@@ -156,7 +156,18 @@ input::placeholder { color: var(--label-tertiary); }
   to   { transform: rotate(360deg); }
 }
 
+/* ── Page transitions ────────────────────────────────── */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+main {
+  animation: pageEnter 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .skeleton { animation: none; background: var(--fill-secondary); }
   button:active:not(:disabled) { transform: none; }
+  main { animation: none; }
 }

@@ -152,5 +152,12 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ item: data })
   }
 
+  // Delete entire list
+  if (body.action === 'delete_list' && body.list_id) {
+    await supabase.from('list_items').delete().eq('list_id', body.list_id)
+    await supabase.from('shopping_lists').delete().eq('id', body.list_id)
+    return NextResponse.json({ ok: true })
+  }
+
   return NextResponse.json({ error: 'Ação desconhecida' }, { status: 400 })
 }

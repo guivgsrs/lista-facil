@@ -1,12 +1,48 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw, ShoppingCart, Camera, Pencil } from 'lucide-react'
+import { SearchX, ShoppingCart, Camera, Pencil } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SECTIONS, getSectionOrder } from '@/lib/store-map'
 import type { ItemStatus, ListItem, SectionGroup } from '@/lib/types'
 
 type PageState = 'loading' | 'empty' | 'shopping'
+
+function SegmentedControl({ active }: { active: 'edit' | 'shop' }) {
+  const [pending, setPending] = useState<'edit' | 'shop' | null>(null)
+  const router = useRouter()
+
+  const effectiveActive = pending ?? active
+
+  function handleNav(target: 'edit' | 'shop') {
+    if (target === active) return
+    setPending(target)
+    setTimeout(() => router.push(target === 'edit' ? '/' : '/shop'), 200)
+  }
+
+  const segStyle = (tab: 'edit' | 'shop'): React.CSSProperties => ({
+    display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
+    borderRadius: 7, fontSize: 13,
+    background: effectiveActive === tab ? 'var(--bg-elevated)' : 'transparent',
+    color: effectiveActive === tab ? 'var(--label-primary)' : 'var(--label-secondary)',
+    fontWeight: effectiveActive === tab ? 600 : 400,
+    boxShadow: effectiveActive === tab ? '0 1px 3px rgba(0,0,0,0.18)' : 'none',
+    transition: 'background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease',
+    border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+  })
+
+  return (
+    <div style={{ display: 'flex', background: 'var(--fill-tertiary)', borderRadius: 9, padding: 2, gap: 2 }}>
+      <button onClick={() => handleNav('edit')} style={segStyle('edit')}>
+        <Pencil size={13} aria-hidden={true} />Criar
+      </button>
+      <button onClick={() => handleNav('shop')} style={segStyle('shop')}>
+        <ShoppingCart size={13} aria-hidden={true} />Mercado
+      </button>
+    </div>
+  )
+}
 
 export default function ShopPage() {
   const [pageState, setPageState] = useState<PageState>('loading')
@@ -69,6 +105,7 @@ export default function ShopPage() {
   const progress      = total > 0 ? done / total : 0
   const allDone       = total > 0 && done === total
   const assai         = sections.filter(s => s.store === 'assai')
+  const farmacia      = sections.filter(s => s.store === 'farmacia')
   const covabra       = sections.filter(s => s.store === 'covabra')
 
   // ── LOADING ────────────────────────────────────────────────
@@ -86,8 +123,8 @@ export default function ShopPage() {
         <div style={{ background: 'var(--bg-card)', borderRadius: 12, overflow: 'hidden' }}>
           {[78, 55, 70, 62, 80, 50].map((w, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderBottom: i < 5 ? '0.5px solid var(--separator-inset)' : 'none' }}>
+              <div className="skeleton" style={{ height: 17, flex: 1, width: `${w}%`, borderRadius: 6 }} />
               <div className="skeleton" style={{ width: 26, height: 26, borderRadius: '50%', flexShrink: 0 }} />
-              <div className="skeleton" style={{ height: 17, width: `${w}%` }} />
             </div>
           ))}
         </div>
@@ -125,41 +162,19 @@ export default function ShopPage() {
   return (
     <main style={{ minHeight: '100dvh', background: 'var(--bg)', paddingBottom: 'calc(48px + env(safe-area-inset-bottom))' }}>
 
-      {/* Nav bar: só o segmented control, centralizado */}
+      {/* Nav bar */}
       <header className="apple-header" style={{ padding: '12px 20px', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ display: 'flex', background: 'var(--fill-tertiary)', borderRadius: 9, padding: 2, gap: 2 }}>
-          <Link href="/" style={{
-            display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
-            borderRadius: 7, textDecoration: 'none', fontSize: 13, fontWeight: 400,
-            background: 'transparent', color: 'var(--label-secondary)',
-          }}>
-            <Pencil size={13} aria-hidden={true} />Criar
-          </Link>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 5, padding: '6px 14px',
-            borderRadius: 7, fontSize: 13, fontWeight: 600,
-            background: 'var(--bg-elevated)', color: 'var(--label-primary)',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.18)',
-          }}>
-            <ShoppingCart size={13} aria-hidden={true} />Mercado
-          </div>
-        </div>
+        <SegmentedControl active="shop" />
       </header>
 
-      {/* Sub-header: título + contagem + progress — sticky */}
+      {/* Sub-header: título + contagem + progress */}
       <div className="apple-header" style={{ padding: '14px 20px 14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4, color: 'var(--label-primary)' }}>
-            {allDone ? 'Tudo certo!' : 'Lista de mercado'}
-          </h1>
-          <button onClick={loadList} aria-label="Atualizar lista" style={{ background: 'none', border: 'none', padding: '10px 0 10px 14px', cursor: 'pointer', display: 'flex', minHeight: 44, alignItems: 'center' }}>
-            <RefreshCw size={16} color="var(--label-tertiary)" aria-hidden={true} />
-          </button>
-        </div>
+        <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 700, letterSpacing: -0.4, color: 'var(--label-primary)' }}>
+          {allDone ? 'Tudo certo!' : 'Lista de mercado'}
+        </h1>
         <p style={{ margin: '0 0 10px', fontSize: 13, color: 'var(--label-secondary)' }}>
           {done} de {total} itens
         </p>
-        {/* Progress */}
         <div style={{ height: 4, background: 'var(--fill-tertiary)', borderRadius: 2, overflow: 'hidden' }}>
           <div style={{
             height: '100%', borderRadius: 2,
@@ -179,7 +194,19 @@ export default function ShopPage() {
               Assaí Atacadista
             </p>
             {assai.map(s => (
-              <SectionBlock key={s.id} section={s} onToggle={toggleItem} onCovabra={markCovabra} updating={updating} />
+              <SectionBlock key={s.id} section={s} isExternalStore={false} onToggle={toggleItem} onCovabra={markCovabra} updating={updating} />
+            ))}
+          </>
+        )}
+
+        {/* Farmácia */}
+        {farmacia.length > 0 && (
+          <>
+            <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--blue)', letterSpacing: 0.2, margin: '24px 4px 6px' }}>
+              Farmácia
+            </p>
+            {farmacia.map(s => (
+              <SectionBlock key={s.id} section={s} isExternalStore={true} onToggle={toggleItem} onCovabra={markCovabra} updating={updating} />
             ))}
           </>
         )}
@@ -187,11 +214,11 @@ export default function ShopPage() {
         {/* Covabra */}
         {covabra.length > 0 && (
           <>
-            <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--orange)', textTransform: 'uppercase', letterSpacing: 0.6, margin: '24px 4px 6px' }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--orange)', letterSpacing: 0.2, margin: '24px 4px 6px' }}>
               Covabra
             </p>
             {covabra.map(s => (
-              <SectionBlock key={s.id} section={s} onToggle={toggleItem} onCovabra={markCovabra} updating={updating} />
+              <SectionBlock key={s.id} section={s} isExternalStore={true} onToggle={toggleItem} onCovabra={markCovabra} updating={updating} />
             ))}
           </>
         )}
@@ -202,8 +229,9 @@ export default function ShopPage() {
 }
 
 /* ── SectionBlock ─────────────────────────────────────────── */
-function SectionBlock({ section, onToggle, onCovabra, updating }: {
+function SectionBlock({ section, isExternalStore, onToggle, onCovabra, updating }: {
   section: SectionGroup
+  isExternalStore: boolean
   onToggle:  (id: string, s: ItemStatus) => void
   onCovabra: (id: string) => void
   updating:  Set<string>
@@ -220,6 +248,7 @@ function SectionBlock({ section, onToggle, onCovabra, updating }: {
             item={item}
             isLast={idx === section.items.length - 1}
             loading={updating.has(item.id)}
+            hideCovabraBtn={isExternalStore}
             onToggle={() => onToggle(item.id, item.status)}
             onCovabra={() => onCovabra(item.id)}
           />
@@ -230,24 +259,62 @@ function SectionBlock({ section, onToggle, onCovabra, updating }: {
 }
 
 /* ── CheckRow ─────────────────────────────────────────────── */
-function CheckRow({ item, isLast, loading, onToggle, onCovabra }: {
-  item:      ListItem
-  isLast:    boolean
-  loading:   boolean
-  onToggle:  () => void
-  onCovabra: () => void
+function CheckRow({ item, isLast, loading, hideCovabraBtn, onToggle, onCovabra }: {
+  item:           ListItem
+  isLast:         boolean
+  loading:        boolean
+  hideCovabraBtn: boolean
+  onToggle:       () => void
+  onCovabra:      () => void
 }) {
   const checked = item.status === 'found'
+  const showCovabra = !hideCovabraBtn && !checked && item.status !== 'not_found'
 
   return (
     <div>
       <div style={{
-        display: 'flex', alignItems: 'center', gap: 5,
+        display: 'flex', alignItems: 'center', gap: 12,
         padding: '13px 16px', minHeight: 50,
         opacity: loading ? 0.55 : 1,
         transition: 'opacity 0.15s ease',
       }}>
-        {/* Circle — 44pt tap area, 26pt visual */}
+        {/* Name */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{
+            margin: 0, fontSize: 17, fontWeight: checked ? 400 : 500,
+            color: checked ? 'var(--label-tertiary)' : 'var(--label-primary)',
+            textDecoration: checked ? 'line-through' : 'none',
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            transition: 'color 0.2s ease',
+          }}>
+            {(item.qty ?? 1) > 1 && (
+              <span style={{ fontSize: 14, fontWeight: 700, color: checked ? 'var(--label-tertiary)' : 'var(--blue)', marginRight: 5 }}>
+                ×{item.qty}
+              </span>
+            )}
+            {item.name}
+          </p>
+        </div>
+
+        {/* Covabra icon — only when applicable */}
+        {showCovabra && (
+          <button
+            onClick={onCovabra}
+            disabled={loading}
+            aria-label="Mover para Covabra"
+            style={{
+              background: 'var(--fill-tertiary)',
+              border: 'none', borderRadius: 8,
+              padding: '10px 10px', minHeight: 44,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', flexShrink: 0,
+            }}
+          >
+            <SearchX size={16} color="var(--label-secondary)" aria-hidden={true} />
+          </button>
+        )}
+
+        {/* Circle — 44pt tap area, 26pt visual — RIGHT side */}
         <button
           onClick={onToggle}
           disabled={loading}
@@ -274,42 +341,6 @@ function CheckRow({ item, isLast, loading, onToggle, onCovabra }: {
             )}
           </div>
         </button>
-
-        {/* Name */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{
-            margin: 0, fontSize: 17, fontWeight: checked ? 400 : 500,
-            color: checked ? 'var(--label-tertiary)' : 'var(--label-primary)',
-            textDecoration: checked ? 'line-through' : 'none',
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            transition: 'color 0.2s ease',
-          }}>
-            {(item.qty ?? 1) > 1 && (
-              <span style={{ fontSize: 14, fontWeight: 700, color: checked ? 'var(--label-tertiary)' : 'var(--blue)', marginRight: 5 }}>
-                ×{item.qty}
-              </span>
-            )}
-            {item.name}
-          </p>
-        </div>
-
-        {/* Covabra — só quando pendente */}
-        {!checked && item.status !== 'not_found' && (
-          <button
-            onClick={onCovabra}
-            disabled={loading}
-            style={{
-              background: 'var(--fill-tertiary)',
-              border: 'none', borderRadius: 8,
-              padding: '10px 12px', fontSize: 12, fontWeight: 500,
-              color: 'var(--label-secondary)',
-              cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap',
-              minHeight: 44,
-            }}
-          >
-            Covabra →
-          </button>
-        )}
       </div>
       {!isLast && <div className="list-separator" />}
     </div>

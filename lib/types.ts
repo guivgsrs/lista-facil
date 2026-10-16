@@ -27,7 +27,7 @@ export interface PresetItem {
 export interface SectionGroup {
   id: string
   name: string
-  store: 'assai' | 'covabra'
+  store: 'assai' | 'covabra' | 'farmacia'
   order: number
   items: ListItem[]
 }

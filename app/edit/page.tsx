@@ -218,10 +218,7 @@ export default function EditPage() {
             <div className="apple-card" style={{ marginBottom: 10, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
               {items.length === 0 ? (
                 <div style={{ padding: '32px 20px', textAlign: 'center' }}>
-                  <div style={{ width: 56, height: 56, borderRadius: 16, background: S.fill2, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                    <Plus size={26} color={S.p3} strokeWidth={2} />
-                  </div>
-                  <p style={{ margin: '0 0 4px', fontSize: 16, fontWeight: 600, color: S.p1 }}>Lista vazia</p>
+                  <p style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 600, color: S.p1 }}>Lista vazia</p>
                   <p style={{ margin: '0 0 20px', fontSize: 14, color: S.p3, lineHeight: 1.5 }}>Tire uma foto da lista manuscrita ou adicione itens manualmente</p>
                   <button
                     onClick={() => setAddingItem(true)}

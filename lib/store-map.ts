@@ -18,8 +18,9 @@ export const SECTIONS = [
   { id: 'geladeiras', name: 'Geladeiras', store: 'assai' as const, order: 14 },
   { id: 'congeladores', name: 'Congeladores', store: 'assai' as const, order: 15 },
   { id: 'acougue', name: 'Açougue', store: 'assai' as const, order: 16 },
-  { id: 'covabra', name: 'Covabra', store: 'covabra' as const, order: 17 },
-  { id: 'sem_secao', name: 'Sem seção confirmada', store: 'assai' as const, order: 18 },
+  { id: 'farmacia', name: 'Farmácia', store: 'farmacia' as const, order: 17 },
+  { id: 'covabra', name: 'Covabra', store: 'covabra' as const, order: 18 },
+  { id: 'sem_secao', name: 'Sem seção confirmada', store: 'assai' as const, order: 19 },
 ]
 
 // Palavras-chave por seção — baseado no mapa confirmado pelo usuário
@@ -40,6 +41,7 @@ const SECTION_KEYWORDS: Record<string, string[]> = {
   geladeiras: ['manteiga', 'requeijao', 'requeijão', 'ricota'],
   congeladores: ['pao de queijo', 'pão de queijo', 'congelado'],
   acougue: ['frango', 'carne', 'picanha', 'alcatra', 'patinho', 'costela', 'linguica', 'linguiça', 'salsicha', 'bacon'],
+  farmacia: ['remedio', 'remédio', 'medicamento', 'comprimido', 'capsulas', 'cápsulas', 'vitamina', 'suplemento', 'proteina', 'proteína', 'whey', 'creatina', 'colágeno', 'colageno', 'omega', 'ômega', 'pomada', 'band-aid', 'curativo', 'esparadrapo', 'dipirona', 'paracetamol', 'ibuprofeno', 'aspirina', 'antigripal', 'antialergico', 'antiálergico'],
   covabra: ['camisinha', 'bolacha magic', 'cha de tpm', 'chá de tpm'],
 }
 
@@ -54,14 +56,19 @@ function normalize(text: string): string {
 export function assignSection(itemName: string): string {
   const name = normalize(itemName)
 
-  // Check covabra first (items that only exist there)
+  // Check farmacia first
+  for (const keyword of SECTION_KEYWORDS.farmacia) {
+    if (name.includes(normalize(keyword))) return 'farmacia'
+  }
+
+  // Check covabra (items that only exist there)
   for (const keyword of SECTION_KEYWORDS.covabra) {
     if (name.includes(normalize(keyword))) return 'covabra'
   }
 
   // Check all other sections
   for (const [sectionId, keywords] of Object.entries(SECTION_KEYWORDS)) {
-    if (sectionId === 'covabra') continue
+    if (sectionId === 'covabra' || sectionId === 'farmacia') continue
     for (const keyword of keywords) {
       const k = normalize(keyword)
       if (name.includes(k) || (k.length > 4 && k.includes(name))) {
