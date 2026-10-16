@@ -2,73 +2,156 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Apple System Colors ─────────────────────────────────── */
 :root {
-  --bg: #F2F2F7;
-  --bg-card: #FFFFFF;
-  --text-primary: #1C1C1E;
-  --text-secondary: #6C6C70;
-  --text-tertiary: #AEAEB2;
-  --separator: rgba(60, 60, 67, 0.12);
-  --separator-inset: rgba(60, 60, 67, 0.08);
-  --blue: #007AFF;
-  --green: #34C759;
-  --red: #FF3B30;
+  /* Backgrounds */
+  --bg:             #F2F2F7;
+  --bg-card:        #FFFFFF;
+  --bg-elevated:    #FFFFFF;
+
+  /* Labels */
+  --label-primary:   #000000;
+  --label-secondary: rgba(60, 60, 67, 0.6);
+  --label-tertiary:  rgba(60, 60, 67, 0.3);
+  --label-quaternary:rgba(60, 60, 67, 0.18);
+
+  /* Fills */
+  --fill-primary:   rgba(120, 120, 128, 0.2);
+  --fill-secondary: rgba(120, 120, 128, 0.16);
+  --fill-tertiary:  rgba(118, 118, 128, 0.12);
+  --fill-quaternary:rgba(116, 116, 128, 0.08);
+
+  /* Separators */
+  --separator:       rgba(60, 60, 67, 0.29);
+  --separator-inset: rgba(60, 60, 67, 0.12);
+
+  /* System colors */
+  --blue:   #007AFF;
+  --green:  #34C759;
+  --red:    #FF3B30;
   --orange: #FF9500;
-  --gray4: #D1D1D6;
-  --gray5: #E5E5EA;
-  --gray6: #F2F2F7;
-  --fill-secondary: rgba(120, 120, 128, 0.12);
-  --fill-tertiary: rgba(118, 118, 128, 0.08);
+  --yellow: #FFCC00;
+  --indigo: #5856D6;
+  --gray:   #8E8E93;
+  --gray2:  #AEAEB2;
+  --gray3:  #C7C7CC;
+  --gray4:  #D1D1D6;
+  --gray5:  #E5E5EA;
+  --gray6:  #F2F2F7;
+
+  /* Aliases (usados no código) */
+  --text-primary:   var(--label-primary);
+  --text-secondary: var(--label-secondary);
+  --text-tertiary:  var(--label-tertiary);
 }
 
-* {
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:             #000000;
+    --bg-card:        #1C1C1E;
+    --bg-elevated:    #2C2C2E;
+
+    --label-primary:   #FFFFFF;
+    --label-secondary: rgba(235, 235, 245, 0.6);
+    --label-tertiary:  rgba(235, 235, 245, 0.3);
+    --label-quaternary:rgba(235, 235, 245, 0.18);
+
+    --fill-primary:   rgba(120, 120, 128, 0.36);
+    --fill-secondary: rgba(120, 120, 128, 0.32);
+    --fill-tertiary:  rgba(118, 118, 128, 0.24);
+    --fill-quaternary:rgba(118, 118, 128, 0.18);
+
+    --separator:       rgba(84, 84, 88, 0.65);
+    --separator-inset: rgba(84, 84, 88, 0.36);
+
+    --gray5:  #2C2C2E;
+    --gray6:  #1C1C1E;
+    --gray4:  #3A3A3C;
+    --gray3:  #48484A;
+    --gray2:  #636366;
+  }
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*, *::before, *::after {
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
 }
 
 html, body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text',
+               'Helvetica Neue', Arial, sans-serif;
   background: var(--bg);
-  color: var(--text-primary);
+  color: var(--label-primary);
   min-height: 100dvh;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Skeleton shimmer — onda da esquerda para direita (Apple/LinkedIn style) */
+body { overscroll-behavior: none; }
+
+/* ── Skeleton ────────────────────────────────────────────── */
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #E5E5EA 25%, #F0F0F5 50%, #E5E5EA 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.6s ease-in-out infinite;
   border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    var(--fill-secondary) 25%,
+    var(--fill-tertiary)  50%,
+    var(--fill-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
 }
 
-/* iOS grouped card */
-.card {
-  background: var(--bg-card);
-  border-radius: 16px;
-  overflow: hidden;
-}
+/* ── Buttons ─────────────────────────────────────────────── */
+button { font-family: inherit; }
 
-/* Button pressed state — Apple spring feel */
 button:active:not(:disabled) {
   opacity: 0.65;
   transform: scale(0.96);
   transition: transform 0.08s ease, opacity 0.08s ease;
 }
 
-/* Prevent rubber band on iOS */
-body {
-  overscroll-behavior: none;
+/* ── Inputs ──────────────────────────────────────────────── */
+input {
+  font-family: inherit;
+  color: var(--label-primary);
 }
 
-/* Checked item transition */
-.item-checked {
-  transition: opacity 0.25s ease;
+input::placeholder { color: var(--label-tertiary); }
+
+/* ── Utilities ───────────────────────────────────────────── */
+.apple-header {
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--separator-inset);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.apple-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Separator inside a grouped list (inset style — starts after left padding) */
+.list-separator {
+  height: 0.5px;
+  background: var(--separator-inset);
+  margin-left: 16px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
