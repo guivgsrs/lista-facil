@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw, ChevronLeft, ShoppingCart, Camera } from 'lucide-react'
+import { RefreshCw, ShoppingCart, Camera, Pencil } from 'lucide-react'
 import Link from 'next/link'
 import { SECTIONS, getSectionOrder } from '@/lib/store-map'
 import type { ItemStatus, ListItem, SectionGroup } from '@/lib/types'
@@ -120,22 +120,38 @@ export default function ShopPage() {
 
       {/* Header */}
       <header className="apple-header" style={{ padding: '12px 20px 14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 2, color: 'var(--blue)', textDecoration: 'none', fontSize: 16 }}>
-            <ChevronLeft size={20} strokeWidth={2} style={{ marginLeft: -4 }} />
-            Início
-          </Link>
-          <button onClick={loadList} aria-label="Atualizar lista" style={{ background: 'none', border: 'none', padding: '12px', cursor: 'pointer', display: 'flex', margin: -8 }}>
-            <RefreshCw size={19} color="var(--blue)" aria-hidden={true} />
-          </button>
-        </div>
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: -0.4 }}>
-            {allDone ? 'Tudo certo!' : 'Mercado'}
+            {allDone ? 'Tudo certo!' : 'Lista de mercado'}
           </h1>
-          <p style={{ margin: '3px 0 0', fontSize: 13, color: 'var(--label-secondary)' }}>
+          {/* Segmented control inline */}
+          <div style={{ display: 'flex', background: 'var(--fill-secondary)', borderRadius: 9, padding: 2, gap: 2 }}>
+            <Link href="/" style={{
+              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px',
+              borderRadius: 7, textDecoration: 'none', fontSize: 13, fontWeight: 400,
+              background: 'transparent', color: 'var(--label-secondary)',
+            }}>
+              <Pencil size={13} aria-hidden={true} />
+              Criar
+            </Link>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px',
+              borderRadius: 7, fontSize: 13, fontWeight: 600,
+              background: 'var(--bg-card)', color: 'var(--label-primary)',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.14)',
+            }}>
+              <ShoppingCart size={13} aria-hidden={true} />
+              Mercado
+            </div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <p style={{ margin: 0, fontSize: 13, color: 'var(--label-secondary)' }}>
             {done} de {total} itens
           </p>
+          <button onClick={loadList} aria-label="Atualizar lista" style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', display: 'flex', margin: '-4px -8px -4px 0' }}>
+            <RefreshCw size={15} color="var(--label-tertiary)" aria-hidden={true} />
+          </button>
         </div>
 
         {/* Progress */}
