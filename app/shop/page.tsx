@@ -278,6 +278,24 @@ function CheckRow({ item, isLast, loading, hideCovabraBtn, onToggle, onCovabra }
         opacity: loading ? 0.55 : 1,
         transition: 'opacity 0.15s ease',
       }}>
+        {/* Covabra icon — LEFT side, only when applicable */}
+        {showCovabra && (
+          <button
+            onClick={onCovabra}
+            disabled={loading}
+            aria-label="Mover para Covabra"
+            style={{
+              background: 'var(--fill-tertiary)',
+              border: 'none', borderRadius: 8,
+              padding: '10px 10px', minHeight: 44,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', flexShrink: 0,
+            }}
+          >
+            <SearchX size={16} color="var(--label-secondary)" aria-hidden={true} />
+          </button>
+        )}
+
         {/* Name */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{
@@ -295,24 +313,6 @@ function CheckRow({ item, isLast, loading, hideCovabraBtn, onToggle, onCovabra }
             {item.name}
           </p>
         </div>
-
-        {/* Covabra icon — only when applicable */}
-        {showCovabra && (
-          <button
-            onClick={onCovabra}
-            disabled={loading}
-            aria-label="Mover para Covabra"
-            style={{
-              background: 'var(--fill-tertiary)',
-              border: 'none', borderRadius: 8,
-              padding: '10px 10px', minHeight: 44,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', flexShrink: 0,
-            }}
-          >
-            <SearchX size={16} color="var(--label-secondary)" aria-hidden={true} />
-          </button>
-        )}
 
         {/* Circle — 44pt tap area, 26pt visual — RIGHT side */}
         <button
