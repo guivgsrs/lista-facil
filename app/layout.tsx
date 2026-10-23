@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import SupabaseGuard from './components/SupabaseGuard'
 
 export const metadata: Metadata = {
   title: 'Lista Fácil',
@@ -24,7 +25,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body><SupabaseGuard>{children}</SupabaseGuard></body>
     </html>
   )
 }
