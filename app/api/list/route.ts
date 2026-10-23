@@ -75,7 +75,8 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (listError || !list) {
-    return NextResponse.json({ error: 'Erro ao criar lista' }, { status: 500 })
+    console.error('Supabase insert list error:', listError)
+    return NextResponse.json({ error: listError?.message ?? 'Erro ao criar lista' }, { status: 500 })
   }
 
   // Insert items
@@ -85,7 +86,8 @@ export async function POST(req: NextRequest) {
       .insert(items.map(item => ({ ...item, list_id: list.id, status: 'pending' })))
 
     if (itemsError) {
-      return NextResponse.json({ error: 'Erro ao salvar itens' }, { status: 500 })
+      console.error('Supabase insert items error:', itemsError)
+      return NextResponse.json({ error: itemsError.message }, { status: 500 })
     }
   }
 
